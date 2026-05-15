@@ -60,7 +60,7 @@ const useLenis = () => {
   return lenisRef;
 };
 
-/* ===== AUDIO ===== */
+/* ===== AUDIO SYSTEM ===== */
 const useAudio = () => {
   const [muted, setMuted] = useState(() => localStorage.getItem('vanta-muted') === 'true');
   const audioCtxRef = useRef(null);
@@ -101,20 +101,59 @@ const useAudio = () => {
     setTimeout(() => playTone(1100, 'sine', 0.08, 0.06), 50);
   }, [playTone]);
 
+  const playTrailSound = useCallback(() => {
+    // Ethereal trail sound - very subtle
+    const ctx = initAudio();
+    const osc = ctx.createOscillator();
+    const gain = ctx.createGain();
+    const filter = ctx.createBiquadFilter();
+    
+    osc.type = 'sine';
+    osc.frequency.setValueAtTime(440 + Math.random() * 200, ctx.currentTime);
+    osc.frequency.exponentialRampToValueAtTime(880, ctx.currentTime + 0.1);
+    
+    filter.type = 'lowpass';
+    filter.frequency.setValueAtTime(1000, ctx.currentTime);
+    filter.frequency.exponentialRampToValueAtTime(3000, ctx.currentTime + 0.1);
+    
+    gain.gain.setValueAtTime(0.02, ctx.currentTime);
+    gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.15);
+    
+    osc.connect(filter);
+    filter.connect(gain);
+    gain.connect(ctx.destination);
+    osc.start();
+    osc.stop(ctx.currentTime + 0.15);
+  }, [muted]);
+
   const startDrone = useCallback(() => {
     if (muted || droneRef.current || startedRef.current) return;
     try {
       const ctx = initAudio();
-      const osc = ctx.createOscillator();
+      const osc1 = ctx.createOscillator();
+      const osc2 = ctx.createOscillator();
       const gain = ctx.createGain();
-      osc.type = 'sine';
-      osc.frequency.setValueAtTime(55, ctx.currentTime);
+      const filter = ctx.createBiquadFilter();
+      
+      osc1.type = 'sine';
+      osc1.frequency.setValueAtTime(55, ctx.currentTime);
+      osc2.type = 'sine';
+      osc2.frequency.setValueAtTime(82.5, ctx.currentTime); // Perfect fifth
+      
+      filter.type = 'lowpass';
+      filter.frequency.setValueAtTime(400, ctx.currentTime);
+      filter.Q.setValueAtTime(1, ctx.currentTime);
+      
       gain.gain.setValueAtTime(0, ctx.currentTime);
-      gain.gain.linearRampToValueAtTime(0.03, ctx.currentTime + 2);
-      osc.connect(gain);
+      gain.gain.linearRampToValueAtTime(0.025, ctx.currentTime + 3);
+      
+      osc1.connect(filter);
+      osc2.connect(filter);
+      filter.connect(gain);
       gain.connect(ctx.destination);
-      osc.start();
-      droneRef.current = { osc, gain };
+      osc1.start();
+      osc2.start();
+      droneRef.current = { osc1, osc2, gain };
       startedRef.current = true;
     } catch (e) {}
   }, [muted]);
@@ -122,10 +161,11 @@ const useAudio = () => {
   const stopDrone = useCallback(() => {
     if (droneRef.current) {
       try {
-        const { osc, gain } = droneRef.current;
+        const { osc1, osc2, gain } = droneRef.current;
         const ctx = audioCtxRef.current;
-        gain.gain.linearRampToValueAtTime(0, ctx.currentTime + 0.5);
-        osc.stop(ctx.currentTime + 0.5);
+        gain.gain.linearRampToValueAtTime(0, ctx.currentTime + 1);
+        osc1.stop(ctx.currentTime + 1);
+        osc2.stop(ctx.currentTime + 1);
       } catch (e) {}
       droneRef.current = null;
       startedRef.current = false;
@@ -157,7 +197,7 @@ const useAudio = () => {
     };
   }, [muted, startDrone]);
 
-  return { muted, toggleMute, playHover, playClick };
+  return { muted, toggleMute, playHover, playClick, playTrailSound };
 };
 
 /* ===== TEXT SCRAMBLE ===== */
@@ -192,39 +232,12 @@ const useTextScramble = () => {
   return scramble;
 };
 
-/* ===== VELOCITY SKEW ===== */
-const useVelocitySkew = () => {
-  useEffect(() => {
-    let lastScroll = window.scrollY;
-    let currentSkew = 0;
-    let rafId;
-    
-    const update = () => {
-      const scrollY = window.scrollY;
-      const velocity = scrollY - lastScroll;
-      lastScroll = scrollY;
-      
-      const targetSkew = Math.max(-2, Math.min(2, velocity * 0.015));
-      currentSkew += (targetSkew - currentSkew) * 0.08;
-      
-      const skewElements = document.querySelectorAll('.velocity-skew');
-      skewElements.forEach(el => {
-        el.style.transform = `skewY(${currentSkew}deg)`;
-      });
-      
-      rafId = requestAnimationFrame(update);
-    };
-    
-    rafId = requestAnimationFrame(update);
-    return () => cancelAnimationFrame(rafId);
-  }, []);
-};
-
 /* ===== CUSTOM CURSOR ===== */
 const CustomCursor = () => {
   const cursorRef = useRef(null);
   const pos = useRef({ x: -100, y: -100 });
   const target = useRef({ x: -100, y: -100 });
+  const [isHoveringText, setIsHoveringText] = useState(false);
 
   useEffect(() => {
     const onMove = (e) => {
@@ -248,10 +261,18 @@ const CustomCursor = () => {
       if (e.target.closest('a, button, .service-row, .work-item, .magnetic-btn')) {
         cursorRef.current?.classList.add('hovering');
       }
+      if (e.target.closest('p, h1, h2, h3, h4, span')) {
+        setIsHoveringText(true);
+        cursorRef.current?.classList.add('text-hover');
+      }
     };
     const onOut = (e) => {
       if (e.target.closest('a, button, .service-row, .work-item, .magnetic-btn')) {
         cursorRef.current?.classList.remove('hovering');
+      }
+      if (e.target.closest('p, h1, h2, h3, h4, span')) {
+        setIsHoveringText(false);
+        cursorRef.current?.classList.remove('text-hover');
       }
     };
     
@@ -333,116 +354,62 @@ const MagneticButton = ({ children, className, onClick, style, href }) => {
   );
 };
 
-/* ===== CURSOR TRAIL ===== */
-const CursorTrail = ({ active }) => {
+/* ===== CURSOR TRAIL WITH SFX ===== */
+const CursorTrail = ({ active, audio }) => {
   const [items, setItems] = useState([]);
   const idCounter = useRef(0);
   const lastAdd = useRef(0);
+  const lastSound = useRef(0);
 
-  const images = useMemo(() =>
-    Array.from({ length: 8 }, (_, i) => `https://picsum.photos/300/400?random=${i + 50}`)
-  , []);
+  const colors = useMemo(() => [
+    '#94FFE5', '#FF6B35', '#7B4FD4', '#94FFE5', '#FF6B35', '#7B4FD4', '#FFFFFF', '#94FFE5'
+  ], []);
 
   useEffect(() => {
     const onMove = (e) => {
       if (!active) return;
       const now = performance.now();
-      if (now - lastAdd.current < 80) return;
+      if (now - lastAdd.current < 50) return;
       lastAdd.current = now;
 
       const id = idCounter.current++;
-      const img = images[id % images.length];
+      const color = colors[id % colors.length];
+      const size = 4 + Math.random() * 8;
 
       setItems(prev => {
-        const next = [...prev, { id, x: e.clientX, y: e.clientY, img }];
-        return next.length > 8 ? next.slice(-8) : next;
+        const next = [...prev, { id, x: e.clientX, y: e.clientY, color, size }];
+        return next.length > 15 ? next.slice(-15) : next;
       });
 
       setTimeout(() => {
         setItems(prev => prev.filter(item => item.id !== id));
-      }, 800);
+      }, 600);
+
+      // Play trail sound every 150ms max
+      if (now - lastSound.current > 150) {
+        lastSound.current = now;
+        audio?.playTrailSound();
+      }
     };
 
     window.addEventListener('mousemove', onMove);
     return () => window.removeEventListener('mousemove', onMove);
-  }, [images, active]);
+  }, [active, colors, audio]);
 
   return (
     <div className="cursor-trail">
       {items.map(item => (
         <div
           key={item.id}
-          className="trail-image"
+          className="trail-particle"
           style={{
             left: item.x,
             top: item.y,
-            backgroundImage: `url(${item.img})`,
+            width: item.size,
+            height: item.size,
+            background: item.color,
+            animation: 'trailPulse 0.6s ease-out forwards',
           }}
-        />
-      ))}
-    </div>
-  );
-};
-
-/* ===== FLOATING STICKER ===== */
-const Sticker = ({ type, color, size, top, left, delay = 0 }) => {
-  const shapes = {
-    star: (
-      <svg viewBox="0 0 24 24" fill={color} width={size} height={size}>
-        <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
-      </svg>
-    ),
-    circle: (
-      <svg viewBox="0 0 24 24" fill={color} width={size} height={size}>
-        <circle cx="12" cy="12" r="10"/>
-      </svg>
-    ),
-    diamond: (
-      <svg viewBox="0 0 24 24" fill={color} width={size} height={size}>
-        <path d="M12 2L22 12L12 22L2 12Z"/>
-      </svg>
-    ),
-    cross: (
-      <svg viewBox="0 0 24 24" fill={color} width={size} height={size}>
-        <path d="M12 2v20M2 12h20" stroke={color} strokeWidth="4" strokeLinecap="round"/>
-      </svg>
-    ),
-  };
-
-  return (
-    <div className="sticker" style={{ top, left, animationDelay: `${delay}s` }}>
-      {shapes[type] || shapes.circle}
-    </div>
-  );
-};
-
-/* ===== PARTICLES ===== */
-const Particles = () => {
-  const particles = useMemo(() => 
-    Array.from({ length: 25 }, (_, i) => ({
-      id: i,
-      left: `${Math.random() * 100}%`,
-      top: `${Math.random() * 100}%`,
-      delay: `${Math.random() * 20}s`,
-      duration: `${15 + Math.random() * 15}s`,
-      size: `${1 + Math.random() * 2}px`
-    }))
-  , []);
-
-  return (
-    <div className="particles-container" aria-hidden="true">
-      {particles.map(p => (
-        <div 
-          key={p.id} 
-          className="particle" 
-          style={{ 
-            left: p.left, 
-            top: p.top, 
-            animationDelay: p.delay,
-            animationDuration: p.duration,
-            width: p.size,
-            height: p.size
-          }} 
         />
       ))}
     </div>
@@ -480,6 +447,337 @@ const TextReveal = ({ children, as: Component = 'div', className, delay = 0 }) =
       </span>
     </Component>
   );
+};
+
+/* ===== HERO CANVAS - PARTICLE FIELD ===== */
+const HeroCanvas = () => {
+  const canvasRef = useRef(null);
+  const mouseRef = useRef({ x: 0, y: 0 });
+  const particlesRef = useRef([]);
+
+  useEffect(() => {
+    const canvas = canvasRef.current;
+    if (!canvas) return;
+    
+    const ctx = canvas.getContext('2d');
+    let animationId;
+    
+    const resize = () => {
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
+    };
+    resize();
+    window.addEventListener('resize', resize);
+
+    // Create particles
+    const particleCount = 80;
+    particlesRef.current = Array.from({ length: particleCount }, () => ({
+      x: Math.random() * canvas.width,
+      y: Math.random() * canvas.height,
+      vx: (Math.random() - 0.5) * 0.5,
+      vy: (Math.random() - 0.5) * 0.5,
+      size: Math.random() * 2 + 0.5,
+      opacity: Math.random() * 0.5 + 0.2,
+      color: Math.random() > 0.7 ? '#94FFE5' : Math.random() > 0.5 ? '#FF6B35' : '#7B4FD4'
+    }));
+
+    const handleMouseMove = (e) => {
+      mouseRef.current = { x: e.clientX, y: e.clientY };
+    };
+    window.addEventListener('mousemove', handleMouseMove);
+
+    const animate = () => {
+      ctx.fillStyle = 'rgba(5, 15, 13, 0.1)';
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+      particlesRef.current.forEach((p, i) => {
+        // Mouse interaction
+        const dx = mouseRef.current.x - p.x;
+        const dy = mouseRef.current.y - p.y;
+        const dist = Math.sqrt(dx * dx + dy * dy);
+        
+        if (dist < 150) {
+          const force = (150 - dist) / 150;
+          p.vx -= (dx / dist) * force * 0.5;
+          p.vy -= (dy / dist) * force * 0.5;
+        }
+
+        // Update position
+        p.x += p.vx;
+        p.y += p.vy;
+
+        // Damping
+        p.vx *= 0.99;
+        p.vy *= 0.99;
+
+        // Wrap around
+        if (p.x < 0) p.x = canvas.width;
+        if (p.x > canvas.width) p.x = 0;
+        if (p.y < 0) p.y = canvas.height;
+        if (p.y > canvas.height) p.y = 0;
+
+        // Draw particle
+        ctx.beginPath();
+        ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
+        ctx.fillStyle = p.color;
+        ctx.globalAlpha = p.opacity;
+        ctx.fill();
+
+        // Draw connections
+        particlesRef.current.slice(i + 1).forEach(p2 => {
+          const d = Math.sqrt((p.x - p2.x) ** 2 + (p.y - p2.y) ** 2);
+          if (d < 100) {
+            ctx.beginPath();
+            ctx.moveTo(p.x, p.y);
+            ctx.lineTo(p2.x, p2.y);
+            ctx.strokeStyle = '#94FFE5';
+            ctx.globalAlpha = (1 - d / 100) * 0.15;
+            ctx.lineWidth = 0.5;
+            ctx.stroke();
+          }
+        });
+      });
+
+      ctx.globalAlpha = 1;
+      animationId = requestAnimationFrame(animate);
+    };
+
+    animate();
+
+    return () => {
+      cancelAnimationFrame(animationId);
+      window.removeEventListener('resize', resize);
+      window.removeEventListener('mousemove', handleMouseMove);
+    };
+  }, []);
+
+  return <canvas ref={canvasRef} className="hero-canvas" />;
+};
+
+/* ===== WORK CANVAS - ANIMATED SHAPES ===== */
+const WorkCanvas = ({ index }) => {
+  const canvasRef = useRef(null);
+
+  useEffect(() => {
+    const canvas = canvasRef.current;
+    if (!canvas) return;
+    
+    const ctx = canvas.getContext('2d');
+    let animationId;
+    
+    const resize = () => {
+      const rect = canvas.parentElement.getBoundingClientRect();
+      canvas.width = rect.width;
+      canvas.height = rect.height;
+    };
+    resize();
+    window.addEventListener('resize', resize);
+
+    const configs = [
+      // Project 1: Flowing lines
+      {
+        draw: (time) => {
+          ctx.fillStyle = 'rgba(6, 38, 41, 0.05)';
+          ctx.fillRect(0, 0, canvas.width, canvas.height);
+          
+          for (let i = 0; i < 5; i++) {
+            ctx.beginPath();
+            ctx.moveTo(0, canvas.height / 2);
+            for (let x = 0; x < canvas.width; x += 5) {
+              const y = canvas.height / 2 + 
+                Math.sin(x * 0.01 + time * 0.002 + i * 0.5) * 50 +
+                Math.sin(x * 0.02 + time * 0.003 + i) * 30;
+              ctx.lineTo(x, y);
+            }
+            ctx.strokeStyle = `rgba(148, 255, 229, ${0.3 - i * 0.05})`;
+            ctx.lineWidth = 2 - i * 0.3;
+            ctx.stroke();
+          }
+        }
+      },
+      // Project 2: Orbiting circles
+      {
+        draw: (time) => {
+          ctx.fillStyle = 'rgba(6, 38, 41, 0.08)';
+          ctx.fillRect(0, 0, canvas.width, canvas.height);
+          
+          const centerX = canvas.width / 2;
+          const centerY = canvas.height / 2;
+          
+          for (let i = 0; i < 8; i++) {
+            const angle = (time * 0.001 + i * Math.PI / 4);
+            const radius = 50 + i * 20;
+            const x = centerX + Math.cos(angle) * radius;
+            const y = centerY + Math.sin(angle) * radius;
+            
+            ctx.beginPath();
+            ctx.arc(x, y, 3 + i, 0, Math.PI * 2);
+            ctx.fillStyle = i % 2 === 0 ? '#FF6B35' : '#7B4FD4';
+            ctx.globalAlpha = 0.6;
+            ctx.fill();
+          }
+          ctx.globalAlpha = 1;
+        }
+      },
+      // Project 3: Grid waves
+      {
+        draw: (time) => {
+          ctx.fillStyle = 'rgba(6, 38, 41, 0.05)';
+          ctx.fillRect(0, 0, canvas.width, canvas.height);
+          
+          const cols = 10;
+          const rows = 10;
+          const cellW = canvas.width / cols;
+          const cellH = canvas.height / rows;
+          
+          for (let i = 0; i < cols; i++) {
+            for (let j = 0; j < rows; j++) {
+              const x = i * cellW + cellW / 2;
+              const y = j * cellH + cellH / 2;
+              const dist = Math.sqrt((x - canvas.width/2)**2 + (y - canvas.height/2)**2);
+              const wave = Math.sin(dist * 0.05 - time * 0.003) * 0.5 + 0.5;
+              
+              ctx.beginPath();
+              ctx.arc(x, y, 2 + wave * 4, 0, Math.PI * 2);
+              ctx.fillStyle = '#94FFE5';
+              ctx.globalAlpha = wave * 0.5;
+              ctx.fill();
+            }
+          }
+          ctx.globalAlpha = 1;
+        }
+      },
+      // Project 4: Spiral
+      {
+        draw: (time) => {
+          ctx.fillStyle = 'rgba(6, 38, 41, 0.06)';
+          ctx.fillRect(0, 0, canvas.width, canvas.height);
+          
+          const centerX = canvas.width / 2;
+          const centerY = canvas.height / 2;
+          
+          ctx.beginPath();
+          for (let i = 0; i < 200; i++) {
+            const angle = i * 0.1 + time * 0.001;
+            const radius = i * 2;
+            const x = centerX + Math.cos(angle) * radius;
+            const y = centerY + Math.sin(angle) * radius;
+            
+            if (i === 0) ctx.moveTo(x, y);
+            else ctx.lineTo(x, y);
+          }
+          ctx.strokeStyle = '#FF6B35';
+          ctx.lineWidth = 1.5;
+          ctx.globalAlpha = 0.4;
+          ctx.stroke();
+          ctx.globalAlpha = 1;
+        }
+      }
+    ];
+
+    const config = configs[index % configs.length];
+
+    const animate = (time) => {
+      config.draw(time);
+      animationId = requestAnimationFrame(animate);
+    };
+
+    animationId = requestAnimationFrame(animate);
+
+    return () => {
+      cancelAnimationFrame(animationId);
+      window.removeEventListener('resize', resize);
+    };
+  }, [index]);
+
+  return <canvas ref={canvasRef} className="work-canvas" />;
+};
+
+/* ===== NO BORING CANVAS ===== */
+const NoBoringCanvas = () => {
+  const canvasRef = useRef(null);
+
+  useEffect(() => {
+    const canvas = canvasRef.current;
+    if (!canvas) return;
+    
+    const ctx = canvas.getContext('2d');
+    let animationId;
+    
+    const resize = () => {
+      const rect = canvas.parentElement.getBoundingClientRect();
+      canvas.width = rect.width;
+      canvas.height = rect.height;
+    };
+    resize();
+    window.addEventListener('resize', resize);
+
+    const shapes = [];
+    const shapeCount = 6;
+    
+    for (let i = 0; i < shapeCount; i++) {
+      shapes.push({
+        x: Math.random() * canvas.width,
+        y: Math.random() * canvas.height,
+        size: 30 + Math.random() * 60,
+        vx: (Math.random() - 0.5) * 0.3,
+        vy: (Math.random() - 0.5) * 0.3,
+        rotation: Math.random() * Math.PI * 2,
+        rotationSpeed: (Math.random() - 0.5) * 0.02,
+        color: ['#94FFE5', '#FF6B35', '#7B4FD4'][i % 3],
+        type: ['circle', 'square', 'triangle'][i % 3]
+      });
+    }
+
+    const animate = () => {
+      ctx.fillStyle = 'rgba(6, 38, 41, 0.03)';
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+      shapes.forEach(shape => {
+        shape.x += shape.vx;
+        shape.y += shape.vy;
+        shape.rotation += shape.rotationSpeed;
+
+        // Bounce
+        if (shape.x < 0 || shape.x > canvas.width) shape.vx *= -1;
+        if (shape.y < 0 || shape.y > canvas.height) shape.vy *= -1;
+
+        ctx.save();
+        ctx.translate(shape.x, shape.y);
+        ctx.rotate(shape.rotation);
+        
+        ctx.beginPath();
+        if (shape.type === 'circle') {
+          ctx.arc(0, 0, shape.size / 2, 0, Math.PI * 2);
+        } else if (shape.type === 'square') {
+          ctx.rect(-shape.size / 2, -shape.size / 2, shape.size, shape.size);
+        } else {
+          ctx.moveTo(0, -shape.size / 2);
+          ctx.lineTo(shape.size / 2, shape.size / 2);
+          ctx.lineTo(-shape.size / 2, shape.size / 2);
+          ctx.closePath();
+        }
+        
+        ctx.strokeStyle = shape.color;
+        ctx.lineWidth = 1.5;
+        ctx.globalAlpha = 0.4;
+        ctx.stroke();
+        ctx.restore();
+      });
+
+      ctx.globalAlpha = 1;
+      animationId = requestAnimationFrame(animate);
+    };
+
+    animate();
+
+    return () => {
+      cancelAnimationFrame(animationId);
+      window.removeEventListener('resize', resize);
+    };
+  }, []);
+
+  return <canvas ref={canvasRef} className="no-boring-canvas" />;
 };
 
 /* ===== NAVBAR ===== */
@@ -548,7 +846,9 @@ const Navbar = ({ audio, lenisRef }) => {
   return (
     <nav ref={navRef} className={`navbar ${scrolled ? 'scrolled' : ''}`}>
       <div className="nav-container">
-        <div className="nav-item logo font-display">VANTA STUDIO</div>
+        <div className="nav-item logo font-display">
+          <span className="logo-glitch" data-text="VANTA STUDIO">VANTA STUDIO</span>
+        </div>
         <div className={`nav-item nav-links ${mobileOpen ? 'open' : ''}`}>
           {navLink('work', 'Work')}
           {navLink('noboring', 'Studio')}
@@ -611,7 +911,7 @@ const Hero = ({ onMouseEnter, onMouseLeave }) => {
       onMouseEnter={onMouseEnter}
       onMouseLeave={onMouseLeave}
     >
-      <div className="hero-bg" />
+      <HeroCanvas />
       <div className="container hero-container">
         <div className="hero-eyebrow">Digital Experience Studio</div>
         <h1 className="font-display hero-headline">
@@ -656,7 +956,7 @@ const NoBoringBrands = () => {
 
   useEffect(() => {
     const ctx = gsap.context(() => {
-      gsap.from('.no-boring-visual', {
+      gsap.from('.no-boring-canvas', {
         scale: 0.9,
         opacity: 0,
         duration: 1,
@@ -685,13 +985,9 @@ const NoBoringBrands = () => {
 
   return (
     <section id="noboring" ref={sectionRef} className="no-boring">
-      <Sticker type="star" color="#94FFE5" size={40} top="10%" left="85%" delay={0} />
-      <Sticker type="circle" color="#FF6B35" size={24} top="70%" left="10%" delay={1} />
-      <Sticker type="diamond" color="#7B4FD4" size={32} top="30%" left="5%" delay={2} />
-      <Sticker type="cross" color="#94FFE5" size={28} top="80%" left="80%" delay={1.5} />
       <div className="container no-boring-layout">
         <div className="no-boring-visual">
-          <img src="https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?q=80&w=2564&auto=format&fit=crop" alt="Abstract visual" loading="lazy" />
+          <NoBoringCanvas />
         </div>
         <div className="no-boring-content">
           <TextReveal as="h2" className="font-display">
@@ -729,10 +1025,10 @@ const SelectedWork = () => {
   }, []);
 
   const projects = [
-    { title: 'Nike Campaign', category: 'Brand Identity', img: 'https://picsum.photos/800/600?random=10' },
-    { title: 'Spotify Motion', category: 'Motion Design', img: 'https://picsum.photos/800/600?random=11' },
-    { title: 'Apple Web Experience', category: 'Web Design', img: 'https://picsum.photos/800/600?random=12' },
-    { title: 'Adidas Launch', category: 'Campaign', img: 'https://picsum.photos/800/600?random=13' },
+    { title: 'Nike Campaign', category: 'Brand Identity' },
+    { title: 'Spotify Motion', category: 'Motion Design' },
+    { title: 'Apple Web Experience', category: 'Web Design' },
+    { title: 'Adidas Launch', category: 'Campaign' },
   ];
 
   return (
@@ -748,8 +1044,8 @@ const SelectedWork = () => {
         </div>
         <div className="work-grid">
           {projects.map((project, i) => (
-            <div key={i} className="work-item velocity-skew">
-              <img src={project.img} alt={project.title} loading="lazy" />
+            <div key={i} className="work-item">
+              <WorkCanvas index={i} />
               <div className="work-item-overlay">
                 <div className="work-item-category">{project.category}</div>
                 <div className="work-item-title">{project.title}</div>
@@ -804,7 +1100,7 @@ const Services = ({ audio }) => {
           {services.map((s, i) => (
             <div
               key={s.num}
-              className="service-row velocity-skew"
+              className="service-row"
               onMouseEnter={() => audio.playHover(i)}
             >
               <div className="service-row-number">{s.num}</div>
@@ -841,9 +1137,6 @@ const ValuesMarquee = () => {
 const CTA = ({ audio }) => {
   return (
     <section id="contact" className="cta">
-      <Sticker type="star" color="#FF6B35" size={36} top="15%" left="15%" delay={0.5} />
-      <Sticker type="circle" color="#94FFE5" size={20} top="75%" left="75%" delay={1} />
-      <Sticker type="diamond" color="#7B4FD4" size={28} top="20%" left="80%" delay={2} />
       <div className="container">
         <TextReveal as="h2" className="font-display">
           READY TO BUILD SOMETHING UNFORGETTABLE?
@@ -914,15 +1207,12 @@ function App() {
   const audio = useAudio();
   const lenisRef = useLenis();
   const [trailActive, setTrailActive] = useState(false);
-  
-  useVelocitySkew();
 
   return (
     <div className="app">
       <GrainOverlay />
-      <Particles />
       <CustomCursor />
-      <CursorTrail active={trailActive} />
+      <CursorTrail active={trailActive} audio={audio} />
       <Navbar audio={audio} lenisRef={lenisRef} />
       <Hero
         onMouseEnter={() => setTrailActive(true)}
