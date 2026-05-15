@@ -7,72 +7,6 @@ import './index.css';
 gsap.registerPlugin(ScrollTrigger);
 
 /* ===== SVG ICONS ===== */
-const BrandIcon = () => (
-  <svg viewBox="0 0 56 56" fill="none" xmlns="http://www.w3.org/2000/svg">
-    <circle cx="28" cy="28" r="26" stroke="#94FFE5" strokeWidth="2"/>
-    <path d="M18 28C18 22.4772 22.4772 18 28 18C33.5228 18 38 22.4772 38 28" stroke="#94FFE5" strokeWidth="2" strokeLinecap="round"/>
-    <circle cx="28" cy="28" r="6" fill="#94FFE5"/>
-    <path d="M28 34V42" stroke="#94FFE5" strokeWidth="2" strokeLinecap="round"/>
-    <path d="M22 40L28 42L34 40" stroke="#94FFE5" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-  </svg>
-);
-
-const MotionIcon = () => (
-  <svg viewBox="0 0 56 56" fill="none" xmlns="http://www.w3.org/2000/svg">
-    <rect x="4" y="12" width="48" height="32" rx="4" stroke="#94FFE5" strokeWidth="2"/>
-    <path d="M22 24L32 28L22 32V24Z" fill="#94FFE5"/>
-    <circle cx="42" cy="28" r="3" fill="#94FFE5" opacity="0.5"/>
-    <path d="M8 44L12 48M48 44L44 48" stroke="#94FFE5" strokeWidth="2" strokeLinecap="round"/>
-  </svg>
-);
-
-const WebIcon = () => (
-  <svg viewBox="0 0 56 56" fill="none" xmlns="http://www.w3.org/2000/svg">
-    <rect x="6" y="8" width="44" height="40" rx="4" stroke="#94FFE5" strokeWidth="2"/>
-    <line x1="6" y1="18" x2="50" y2="18" stroke="#94FFE5" strokeWidth="2"/>
-    <circle cx="14" cy="13" r="2" fill="#94FFE5"/>
-    <circle cx="22" cy="13" r="2" fill="#94FFE5" opacity="0.5"/>
-    <circle cx="30" cy="13" r="2" fill="#94FFE5" opacity="0.3"/>
-    <rect x="14" y="26" width="12" height="16" rx="2" stroke="#94FFE5" strokeWidth="1.5"/>
-    <rect x="30" y="26" width="12" height="8" rx="2" stroke="#94FFE5" strokeWidth="1.5"/>
-    <line x1="30" y1="40" x2="42" y2="40" stroke="#94FFE5" strokeWidth="1.5" strokeLinecap="round"/>
-  </svg>
-);
-
-const CampaignIcon = () => (
-  <svg viewBox="0 0 56 56" fill="none" xmlns="http://www.w3.org/2000/svg">
-    <path d="M8 28C8 16.9543 16.9543 8 28 8C39.0457 8 48 16.9543 48 28" stroke="#94FFE5" strokeWidth="2" strokeLinecap="round"/>
-    <path d="M48 28L44 20L40 28" stroke="#94FFE5" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-    <circle cx="28" cy="28" r="8" stroke="#94FFE5" strokeWidth="2"/>
-    <path d="M28 24V28L31 31" stroke="#94FFE5" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-    <path d="M20 44L24 40L28 44L32 40L36 44" stroke="#94FFE5" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-  </svg>
-);
-
-const SparkIcon = () => (
-  <svg viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
-    <path d="M32 8L36 24L52 28L36 32L32 48L28 32L12 28L28 24L32 8Z" fill="#94FFE5"/>
-    <circle cx="32" cy="28" r="4" fill="#050F0D"/>
-  </svg>
-);
-
-const FlameIcon = () => (
-  <svg viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
-    <path d="M32 12C32 12 20 24 20 36C20 44 25 52 32 52C39 52 44 44 44 36C44 24 32 12 32 12Z" stroke="#FF6B35" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"/>
-    <path d="M32 20C32 20 26 28 26 36C26 40 28 44 32 44" stroke="#FF6B35" strokeWidth="2" strokeLinecap="round"/>
-  </svg>
-);
-
-const CrownIcon = () => (
-  <svg viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
-    <path d="M12 48L16 20L24 28L32 16L40 28L48 20L52 48H12Z" stroke="#7B4FD4" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"/>
-    <circle cx="16" cy="20" r="3" fill="#7B4FD4"/>
-    <circle cx="32" cy="16" r="3" fill="#7B4FD4"/>
-    <circle cx="48" cy="20" r="3" fill="#7B4FD4"/>
-    <line x1="20" y1="40" x2="44" y2="40" stroke="#7B4FD4" strokeWidth="2" strokeLinecap="round"/>
-  </svg>
-);
-
 const TwitterIcon = () => (
   <svg viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
     <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/>
@@ -93,7 +27,13 @@ const LinkedInIcon = () => (
   </svg>
 );
 
-/* ===== LENIS SMOOTH SCROLL ===== */
+const ArrowIcon = () => (
+  <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <path d="M3 8H13M13 8L9 4M13 8L9 12" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+  </svg>
+);
+
+/* ===== LENIS ===== */
 const useLenis = () => {
   const lenisRef = useRef(null);
 
@@ -105,12 +45,6 @@ const useLenis = () => {
     });
 
     lenisRef.current = lenis;
-
-    function raf(time) {
-      lenis.raf(time);
-      requestAnimationFrame(raf);
-    }
-    requestAnimationFrame(raf);
 
     lenis.on('scroll', ScrollTrigger.update);
     gsap.ticker.add((time) => {
@@ -126,7 +60,7 @@ const useLenis = () => {
   return lenisRef;
 };
 
-/* ===== AUDIO SYSTEM ===== */
+/* ===== AUDIO ===== */
 const useAudio = () => {
   const [muted, setMuted] = useState(() => localStorage.getItem('vanta-muted') === 'true');
   const audioCtxRef = useRef(null);
@@ -140,7 +74,7 @@ const useAudio = () => {
     return audioCtxRef.current;
   };
 
-  const playTone = useCallback((freq, type = 'sine', duration = 0.15, volume = 0.1) => {
+  const playTone = useCallback((freq, type = 'sine', duration = 0.15, volume = 0.08) => {
     if (muted) return;
     try {
       const ctx = initAudio();
@@ -158,12 +92,13 @@ const useAudio = () => {
   }, [muted]);
 
   const playHover = useCallback((index) => {
-    const freqs = [220, 330, 440, 550];
-    playTone(freqs[index % freqs.length], 'sine', 0.12, 0.06);
+    const freqs = [330, 440, 550, 660];
+    playTone(freqs[index % freqs.length], 'sine', 0.1, 0.05);
   }, [playTone]);
 
   const playClick = useCallback(() => {
-    playTone(800, 'sine', 0.15, 0.12);
+    playTone(880, 'sine', 0.12, 0.1);
+    setTimeout(() => playTone(1100, 'sine', 0.08, 0.06), 50);
   }, [playTone]);
 
   const startDrone = useCallback(() => {
@@ -173,9 +108,9 @@ const useAudio = () => {
       const osc = ctx.createOscillator();
       const gain = ctx.createGain();
       osc.type = 'sine';
-      osc.frequency.setValueAtTime(60, ctx.currentTime);
+      osc.frequency.setValueAtTime(55, ctx.currentTime);
       gain.gain.setValueAtTime(0, ctx.currentTime);
-      gain.gain.linearRampToValueAtTime(0.04, ctx.currentTime + 3);
+      gain.gain.linearRampToValueAtTime(0.03, ctx.currentTime + 2);
       osc.connect(gain);
       gain.connect(ctx.destination);
       osc.start();
@@ -193,6 +128,7 @@ const useAudio = () => {
         osc.stop(ctx.currentTime + 0.5);
       } catch (e) {}
       droneRef.current = null;
+      startedRef.current = false;
     }
   }, []);
 
@@ -224,7 +160,7 @@ const useAudio = () => {
   return { muted, toggleMute, playHover, playClick };
 };
 
-/* ===== TEXT SCRAMBLE HOOK ===== */
+/* ===== TEXT SCRAMBLE ===== */
 const useTextScramble = () => {
   const chars = '!<>-_\\/[]{}—=+*^?#________';
   
@@ -252,8 +188,36 @@ const useTextScramble = () => {
     
     update();
   }, []);
-
+  
   return scramble;
+};
+
+/* ===== VELOCITY SKEW ===== */
+const useVelocitySkew = () => {
+  useEffect(() => {
+    let lastScroll = window.scrollY;
+    let currentSkew = 0;
+    let rafId;
+    
+    const update = () => {
+      const scrollY = window.scrollY;
+      const velocity = scrollY - lastScroll;
+      lastScroll = scrollY;
+      
+      const targetSkew = Math.max(-2, Math.min(2, velocity * 0.015));
+      currentSkew += (targetSkew - currentSkew) * 0.08;
+      
+      const skewElements = document.querySelectorAll('.velocity-skew');
+      skewElements.forEach(el => {
+        el.style.transform = `skewY(${currentSkew}deg)`;
+      });
+      
+      rafId = requestAnimationFrame(update);
+    };
+    
+    rafId = requestAnimationFrame(update);
+    return () => cancelAnimationFrame(rafId);
+  }, []);
 };
 
 /* ===== CUSTOM CURSOR ===== */
@@ -270,8 +234,8 @@ const CustomCursor = () => {
 
     let raf;
     const animate = () => {
-      pos.current.x += (target.current.x - pos.current.x) * 0.12;
-      pos.current.y += (target.current.y - pos.current.y) * 0.12;
+      pos.current.x += (target.current.x - pos.current.x) * 0.15;
+      pos.current.y += (target.current.y - pos.current.y) * 0.15;
       if (cursorRef.current) {
         cursorRef.current.style.left = `${pos.current.x}px`;
         cursorRef.current.style.top = `${pos.current.y}px`;
@@ -281,24 +245,31 @@ const CustomCursor = () => {
     raf = requestAnimationFrame(animate);
 
     const onOver = (e) => {
-      if (e.target.closest('a, button, .service-card, .pricing-card, .magnetic-btn')) {
+      if (e.target.closest('a, button, .service-row, .work-item, .magnetic-btn')) {
         cursorRef.current?.classList.add('hovering');
       }
     };
     const onOut = (e) => {
-      if (e.target.closest('a, button, .service-card, .pricing-card, .magnetic-btn')) {
+      if (e.target.closest('a, button, .service-row, .work-item, .magnetic-btn')) {
         cursorRef.current?.classList.remove('hovering');
       }
     };
+    
+    const onDown = () => cursorRef.current?.classList.add('clicking');
+    const onUp = () => cursorRef.current?.classList.remove('clicking');
 
     document.addEventListener('mouseover', onOver);
     document.addEventListener('mouseout', onOut);
+    document.addEventListener('mousedown', onDown);
+    document.addEventListener('mouseup', onUp);
 
     return () => {
       window.removeEventListener('mousemove', onMove);
       cancelAnimationFrame(raf);
       document.removeEventListener('mouseover', onOver);
       document.removeEventListener('mouseout', onOut);
+      document.removeEventListener('mousedown', onDown);
+      document.removeEventListener('mouseup', onUp);
     };
   }, []);
 
@@ -306,7 +277,7 @@ const CustomCursor = () => {
 };
 
 /* ===== MAGNETIC BUTTON ===== */
-const MagneticButton = ({ children, className, onClick, style }) => {
+const MagneticButton = ({ children, className, onClick, style, href }) => {
   const btnRef = useRef(null);
   const bounds = useRef(null);
 
@@ -325,25 +296,44 @@ const MagneticButton = ({ children, className, onClick, style }) => {
   };
 
   const handleMouseEnter = () => {
-    bounds.current = btnRef.current.getBoundingClientRect();
+    bounds.current = btnRef.current?.getBoundingClientRect();
+  };
+  
+  const handleClick = (e) => {
+    const button = btnRef.current;
+    if (button) {
+      const ripple = document.createElement('span');
+      ripple.className = 'ripple';
+      const rect = button.getBoundingClientRect();
+      const size = Math.max(rect.width, rect.height);
+      ripple.style.width = ripple.style.height = `${size}px`;
+      ripple.style.left = `${e.clientX - rect.left - size/2}px`;
+      ripple.style.top = `${e.clientY - rect.top - size/2}px`;
+      button.appendChild(ripple);
+      setTimeout(() => ripple.remove(), 600);
+    }
+    onClick?.(e);
   };
 
+  const Tag = href ? 'a' : 'button';
+  
   return (
-    <button
+    <Tag
       ref={btnRef}
-      className={className}
-      onClick={onClick}
+      className={`magnetic-btn ${className || ''}`}
+      onClick={handleClick}
       style={{ ...style, transition: 'transform 0.3s cubic-bezier(0.23, 1, 0.32, 1)' }}
       onMouseMove={handleMouseMove}
       onMouseLeave={handleMouseLeave}
       onMouseEnter={handleMouseEnter}
+      href={href}
     >
-      {children}
-    </button>
+      <span>{children}</span>
+    </Tag>
   );
 };
 
-/* ===== CURSOR IMAGE TRAIL ===== */
+/* ===== CURSOR TRAIL ===== */
 const CursorTrail = ({ active }) => {
   const [items, setItems] = useState([]);
   const idCounter = useRef(0);
@@ -426,12 +416,79 @@ const Sticker = ({ type, color, size, top, left, delay = 0 }) => {
   );
 };
 
+/* ===== PARTICLES ===== */
+const Particles = () => {
+  const particles = useMemo(() => 
+    Array.from({ length: 25 }, (_, i) => ({
+      id: i,
+      left: `${Math.random() * 100}%`,
+      top: `${Math.random() * 100}%`,
+      delay: `${Math.random() * 20}s`,
+      duration: `${15 + Math.random() * 15}s`,
+      size: `${1 + Math.random() * 2}px`
+    }))
+  , []);
+
+  return (
+    <div className="particles-container" aria-hidden="true">
+      {particles.map(p => (
+        <div 
+          key={p.id} 
+          className="particle" 
+          style={{ 
+            left: p.left, 
+            top: p.top, 
+            animationDelay: p.delay,
+            animationDuration: p.duration,
+            width: p.size,
+            height: p.size
+          }} 
+        />
+      ))}
+    </div>
+  );
+};
+
+/* ===== TEXT REVEAL ===== */
+const TextReveal = ({ children, as: Component = 'div', className, delay = 0 }) => {
+  const ref = useRef(null);
+  
+  useEffect(() => {
+    const el = ref.current;
+    if (!el) return;
+    
+    const ctx = gsap.context(() => {
+      gsap.from(el, {
+        yPercent: 100,
+        duration: 0.8,
+        ease: 'power3.out',
+        delay,
+        scrollTrigger: {
+          trigger: el.parentElement,
+          start: 'top 85%',
+          toggleActions: 'play none none none'
+        }
+      });
+    });
+    return () => ctx.revert();
+  }, [delay]);
+  
+  return (
+    <Component className={`text-reveal ${className || ''}`}>
+      <span className="text-reveal-inner" ref={ref}>
+        {children}
+      </span>
+    </Component>
+  );
+};
+
 /* ===== NAVBAR ===== */
 const Navbar = ({ audio, lenisRef }) => {
   const navRef = useRef(null);
   const [scrolled, setScrolled] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
   const [activeSection, setActiveSection] = useState('');
+  const scramble = useTextScramble();
 
   const scrollTo = (id) => {
     setMobileOpen(false);
@@ -447,7 +504,7 @@ const Navbar = ({ audio, lenisRef }) => {
     };
     window.addEventListener('scroll', onScroll);
 
-    const sections = ['hero', 'noboring', 'services', 'pricing', 'contact'];
+    const sections = ['hero', 'noboring', 'work', 'services', 'contact'];
     sections.forEach(id => {
       ScrollTrigger.create({
         trigger: `#${id}`,
@@ -482,6 +539,7 @@ const Navbar = ({ audio, lenisRef }) => {
       href={`#${id}`}
       className={activeSection === id ? 'active' : ''}
       onClick={(e) => { e.preventDefault(); scrollTo(id); }}
+      onMouseEnter={(e) => scramble(e.target, label)}
     >
       {label}
     </a>
@@ -492,11 +550,11 @@ const Navbar = ({ audio, lenisRef }) => {
       <div className="nav-container">
         <div className="nav-item logo font-display">VANTA STUDIO</div>
         <div className={`nav-item nav-links ${mobileOpen ? 'open' : ''}`}>
-          {navLink('hero', 'Work')}
+          {navLink('work', 'Work')}
           {navLink('noboring', 'Studio')}
           {navLink('contact', 'Contact')}
           <button className="sound-toggle" onClick={audio.toggleMute}>
-            {audio.muted ? 'Sounds OFF' : 'Sounds ON'}
+            {audio.muted ? 'Sound Off' : 'Sound On'}
           </button>
         </div>
         <button className="hamburger" onClick={() => setMobileOpen(!mobileOpen)} aria-label="Menu">
@@ -504,7 +562,7 @@ const Navbar = ({ audio, lenisRef }) => {
           <span></span>
           <span></span>
         </button>
-        <MagneticButton className="nav-item magnetic-btn" onClick={() => scrollTo('contact')}>
+        <MagneticButton className="nav-item" onClick={() => scrollTo('contact')}>
           Start a Project
         </MagneticButton>
       </div>
@@ -533,6 +591,14 @@ const Hero = ({ onMouseEnter, onMouseLeave }) => {
         ease: 'power3.out',
         delay: 1.2,
       });
+      gsap.from('.hero-meta-item', {
+        y: 20,
+        opacity: 0,
+        duration: 0.8,
+        stagger: 0.1,
+        ease: 'power3.out',
+        delay: 1.5,
+      });
     }, heroRef);
     return () => ctx.revert();
   }, []);
@@ -547,6 +613,7 @@ const Hero = ({ onMouseEnter, onMouseLeave }) => {
     >
       <div className="hero-bg" />
       <div className="container hero-container">
+        <div className="hero-eyebrow">Digital Experience Studio</div>
         <h1 className="font-display hero-headline">
           <span className="hero-line">
             <span className="hero-word hero-bold">YOUR</span>
@@ -562,8 +629,22 @@ const Hero = ({ onMouseEnter, onMouseLeave }) => {
           </span>
         </h1>
         <p className="hero-subtitle text-muted">
-          We build digital experiences that stop people mid-scroll.
+          We build digital experiences that stop people mid-scroll. Motion-first design for brands that want to stand out.
         </p>
+        <div className="hero-meta">
+          <div className="hero-meta-item">
+            <span className="hero-meta-label">Founded</span>
+            <span className="hero-meta-value">2024</span>
+          </div>
+          <div className="hero-meta-item">
+            <span className="hero-meta-label">Projects</span>
+            <span className="hero-meta-value">120+</span>
+          </div>
+          <div className="hero-meta-item">
+            <span className="hero-meta-label">Awards</span>
+            <span className="hero-meta-value">14</span>
+          </div>
+        </div>
       </div>
     </section>
   );
@@ -575,15 +656,26 @@ const NoBoringBrands = () => {
 
   useEffect(() => {
     const ctx = gsap.context(() => {
-      gsap.from('.no-boring-word', {
-        y: 60,
+      gsap.from('.no-boring-visual', {
+        scale: 0.9,
         opacity: 0,
-        duration: 0.8,
-        stagger: 0.08,
+        duration: 1,
         ease: 'power3.out',
         scrollTrigger: {
           trigger: sectionRef.current,
-          start: 'top 80%',
+          start: 'top 75%',
+          toggleActions: 'play none none none',
+        },
+      });
+      gsap.from('.no-boring-content > *', {
+        y: 40,
+        opacity: 0,
+        duration: 0.8,
+        stagger: 0.15,
+        ease: 'power3.out',
+        scrollTrigger: {
+          trigger: sectionRef.current,
+          start: 'top 70%',
           toggleActions: 'play none none none',
         },
       });
@@ -597,48 +689,42 @@ const NoBoringBrands = () => {
       <Sticker type="circle" color="#FF6B35" size={24} top="70%" left="10%" delay={1} />
       <Sticker type="diamond" color="#7B4FD4" size={32} top="30%" left="5%" delay={2} />
       <Sticker type="cross" color="#94FFE5" size={28} top="80%" left="80%" delay={1.5} />
-      <div className="container">
-        <h2 className="font-display" style={{ fontSize: '8vw', lineHeight: 0.9 }}>
-          <span className="no-boring-word" style={{ display: 'inline-block', marginRight: '0.12em' }}>NO</span>
-          <span className="no-boring-word" style={{ display: 'inline-block', marginRight: '0.12em' }}>BORING</span>
-          <br />
-          <span className="no-boring-word" style={{ display: 'inline-block' }}>BRANDS.</span>
-        </h2>
-        <p className="text-muted" style={{ fontSize: '1.25rem', maxWidth: '480px', marginTop: '2rem' }}>
-          We think every brand has an unforgettable version of itself. We find it.
-        </p>
+      <div className="container no-boring-layout">
+        <div className="no-boring-visual">
+          <img src="https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?q=80&w=2564&auto=format&fit=crop" alt="Abstract visual" loading="lazy" />
+        </div>
+        <div className="no-boring-content">
+          <TextReveal as="h2" className="font-display">
+            NO BORING BRANDS.
+          </TextReveal>
+          <p>
+            We think every brand has an unforgettable version of itself. We find it through motion, design, and relentless attention to detail.
+          </p>
+        </div>
       </div>
     </section>
   );
 };
 
-/* ===== HORIZONTAL SCROLL SECTION ===== */
-const HorizontalScroll = () => {
+/* ===== SELECTED WORK ===== */
+const SelectedWork = () => {
   const sectionRef = useRef(null);
-  const trackRef = useRef(null);
 
   useEffect(() => {
-    const section = sectionRef.current;
-    const track = trackRef.current;
-    if (!section || !track) return;
-
-    const scrollWidth = track.scrollWidth - window.innerWidth;
-
     const ctx = gsap.context(() => {
-      gsap.to(track, {
-        x: -scrollWidth,
-        ease: 'none',
+      gsap.from('.work-item', {
+        y: 60,
+        opacity: 0,
+        duration: 0.9,
+        stagger: 0.15,
+        ease: 'power3.out',
         scrollTrigger: {
-          trigger: section,
-          start: 'top top',
-          end: () => `+=${scrollWidth}`,
-          pin: true,
-          scrub: 1,
-          invalidateOnRefresh: true,
+          trigger: sectionRef.current,
+          start: 'top 75%',
+          toggleActions: 'play none none none',
         },
       });
-    });
-
+    }, sectionRef);
     return () => ctx.revert();
   }, []);
 
@@ -650,20 +736,23 @@ const HorizontalScroll = () => {
   ];
 
   return (
-    <section ref={sectionRef} className="horizontal-section">
-      <div className="horizontal-container">
-        <div ref={trackRef} className="horizontal-track">
-          <div style={{ flexShrink: 0, padding: '0 4rem', display: 'flex', alignItems: 'center' }}>
-            <h2 className="font-display" style={{ fontSize: '6vw', whiteSpace: 'nowrap' }}>
-              SELECTED WORK —
-            </h2>
-          </div>
+    <section id="work" ref={sectionRef} className="selected-work">
+      <div className="container">
+        <div className="work-header">
+          <TextReveal as="h2" className="font-display">
+            SELECTED WORK
+          </TextReveal>
+          <MagneticButton className="cta-btn-outline" style={{ width: 'auto', marginTop: 0 }}>
+            <span>View All</span> <ArrowIcon />
+          </MagneticButton>
+        </div>
+        <div className="work-grid">
           {projects.map((project, i) => (
-            <div key={i} className="horizontal-card">
+            <div key={i} className="work-item velocity-skew">
               <img src={project.img} alt={project.title} loading="lazy" />
-              <div className="horizontal-card-content">
-                <p className="text-muted" style={{ fontSize: '0.875rem', marginBottom: '0.5rem' }}>{project.category}</p>
-                <h3 className="font-display" style={{ fontSize: '2.5rem' }}>{project.title}</h3>
+              <div className="work-item-overlay">
+                <div className="work-item-category">{project.category}</div>
+                <div className="work-item-title">{project.title}</div>
               </div>
             </div>
           ))}
@@ -679,11 +768,11 @@ const Services = ({ audio }) => {
 
   useEffect(() => {
     const ctx = gsap.context(() => {
-      gsap.from('.service-card', {
-        y: 40,
+      gsap.from('.service-row', {
+        y: 30,
         opacity: 0,
-        duration: 0.8,
-        stagger: 0.12,
+        duration: 0.7,
+        stagger: 0.1,
         ease: 'power3.out',
         scrollTrigger: {
           trigger: sectionRef.current,
@@ -696,106 +785,31 @@ const Services = ({ audio }) => {
   }, []);
 
   const services = [
-    { name: 'Brand Identity', desc: 'Logos, systems, and guidelines that scale.', icon: <BrandIcon /> },
-    { name: 'Motion Design', desc: 'Animation that adds life to every interaction.', icon: <MotionIcon /> },
-    { name: 'Web Experiences', desc: 'Sites that perform and convert beautifully.', icon: <WebIcon /> },
-    { name: 'Campaign Direction', desc: 'Creative strategy from concept to launch.', icon: <CampaignIcon /> },
+    { num: '01', name: 'Brand Identity', desc: 'Logos, systems, and guidelines that scale across every touchpoint.' },
+    { num: '02', name: 'Motion Design', desc: 'Animation that adds life to every interaction and transition.' },
+    { num: '03', name: 'Web Experiences', desc: 'Sites that perform and convert with editorial precision.' },
+    { num: '04', name: 'Campaign Direction', desc: 'Creative strategy from concept to launch, no shortcuts.' },
   ];
 
   return (
     <section id="services" ref={sectionRef} className="services">
       <div className="container">
-        <h2 className="font-display" style={{ fontSize: '6vw', marginBottom: 'var(--space-lg)' }}>
-          WHAT WE DO
-        </h2>
-        <div className="services-grid">
+        <div className="services-header">
+          <TextReveal as="h2" className="font-display">
+            WHAT WE DO
+          </TextReveal>
+          <p>Four disciplines. One obsession: making your brand impossible to ignore.</p>
+        </div>
+        <div className="services-list">
           {services.map((s, i) => (
             <div
-              key={s.name}
-              className="service-card"
+              key={s.num}
+              className="service-row velocity-skew"
               onMouseEnter={() => audio.playHover(i)}
             >
-              <div className="card-icon">{s.icon}</div>
-              <h3 style={{ fontFamily: 'var(--font-body)', fontSize: '1.25rem', marginBottom: '0.5rem' }}>
-                {s.name}
-              </h3>
-              <p className="text-muted" style={{ fontSize: '0.9rem' }}>
-                {s.desc}
-              </p>
-            </div>
-          ))}
-        </div>
-      </div>
-    </section>
-  );
-};
-
-/* ===== PRICING ===== */
-const Pricing = ({ lenisRef }) => {
-  const sectionRef = useRef(null);
-
-  useEffect(() => {
-    const ctx = gsap.context(() => {
-      gsap.from('.pricing-card', {
-        y: 50,
-        opacity: 0,
-        duration: 0.9,
-        stagger: 0.15,
-        ease: 'power3.out',
-        scrollTrigger: {
-          trigger: sectionRef.current,
-          start: 'top 75%',
-          toggleActions: 'play none none none',
-        },
-      });
-    }, sectionRef);
-    return () => ctx.revert();
-  }, []);
-
-  const scrollToContact = () => {
-    const el = document.getElementById('contact');
-    if (el && lenisRef.current) {
-      lenisRef.current.scrollTo(el, { offset: -80 });
-    }
-  };
-
-  const tiers = [
-    { name: 'Starter', price: 'Free', color: 'var(--accent-primary)', icon: <SparkIcon />, benefits: ['Brand audit', 'Strategy call', 'Community access'], cta: 'Get Started', glow: 'rgba(148,255,229,0.1)' },
-    { name: 'Growth', price: '$2,500/mo', color: 'var(--accent-secondary)', icon: <FlameIcon />, benefits: ['Dedicated designer', 'Weekly sprints', 'Priority support'], cta: 'Get Started', glow: 'rgba(255,107,53,0.1)' },
-    { name: 'Partner', price: 'Custom', color: 'var(--accent-tertiary)', icon: <CrownIcon />, benefits: ['Full team embed', 'Quarterly planning', 'White-glove delivery'], cta: 'Contact Us', glow: 'rgba(123,79,212,0.1)' },
-  ];
-
-  return (
-    <section id="pricing" ref={sectionRef} className="pricing">
-      <div className="container">
-        <h2 className="font-display" style={{ fontSize: '6vw', marginBottom: 'var(--space-lg)' }}>
-          MEMBERSHIP
-        </h2>
-        <div className="pricing-grid">
-          {tiers.map((tier) => (
-            <div
-              key={tier.name}
-              className="pricing-card"
-              style={{ 
-                border: `2px solid ${tier.color}`,
-                '--card-glow': tier.glow 
-              }}
-            >
-              <div className="tier-icon" style={{ color: tier.color }}>{tier.icon}</div>
-              <h3 style={{ fontFamily: 'var(--font-body)', fontSize: '1.5rem', marginBottom: '0.5rem' }}>
-                {tier.name}
-              </h3>
-              <div style={{ fontSize: '2rem', fontWeight: 700, marginBottom: '1.5rem' }}>
-                {tier.price}
-              </div>
-              <ul style={{ listStyle: 'none', display: 'flex', flexDirection: 'column', gap: '0.75rem', flex: 1 }}>
-                {tier.benefits.map(b => (
-                  <li key={b} className="text-muted">• {b}</li>
-                ))}
-              </ul>
-              <MagneticButton className="cta-btn-outline" onClick={scrollToContact}>
-                {tier.cta}
-              </MagneticButton>
+              <div className="service-row-number">{s.num}</div>
+              <div className="service-row-title font-display">{s.name}</div>
+              <div className="service-row-desc">{s.desc}</div>
             </div>
           ))}
         </div>
@@ -831,18 +845,17 @@ const CTA = ({ audio }) => {
       <Sticker type="circle" color="#94FFE5" size={20} top="75%" left="75%" delay={1} />
       <Sticker type="diamond" color="#7B4FD4" size={28} top="20%" left="80%" delay={2} />
       <div className="container">
-        <h2 className="font-display" style={{ fontSize: '7vw', marginBottom: '1.5rem' }}>
+        <TextReveal as="h2" className="font-display">
           READY TO BUILD SOMETHING UNFORGETTABLE?
-        </h2>
-        <p className="text-muted" style={{ fontSize: '1.25rem', maxWidth: '600px', margin: '0 auto 2rem' }}>
-          Book a call with our team. No decks. No fluff. Just a real conversation.
+        </TextReveal>
+        <p>
+          Book a call with our team. No decks. No fluff. Just a real conversation about what we can build together.
         </p>
         <MagneticButton
-          className="magnetic-btn"
-          style={{ fontSize: '1.25rem', padding: '1rem 2.5rem' }}
+          style={{ fontSize: '1.125rem', padding: '1rem 2.5rem' }}
           onClick={audio.playClick}
         >
-          Book a Call
+          <span>Book a Call</span>
         </MagneticButton>
       </div>
     </section>
@@ -852,15 +865,30 @@ const CTA = ({ audio }) => {
 /* ===== FOOTER ===== */
 const Footer = () => (
   <footer>
-    <div className="container" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '1rem' }}>
-      <div className="logo font-display" style={{ fontSize: '1.25rem' }}>
-        VANTA STUDIO
+    <div className="container footer-grid">
+      <div>
+        <div className="footer-brand font-display">VANTA STUDIO</div>
+        <p className="footer-tagline">Motion-first digital experiences for brands that refuse to be boring.</p>
       </div>
-      <div style={{ display: 'flex', gap: '2rem' }}>
+      <div className="footer-col">
+        <h4>Navigation</h4>
         <a href="#work">Work</a>
-        <a href="#studio">Studio</a>
+        <a href="#noboring">Studio</a>
         <a href="#contact">Contact</a>
       </div>
+      <div className="footer-col">
+        <h4>Social</h4>
+        <a href="https://twitter.com" target="_blank" rel="noopener noreferrer">Twitter</a>
+        <a href="https://instagram.com" target="_blank" rel="noopener noreferrer">Instagram</a>
+        <a href="https://linkedin.com" target="_blank" rel="noopener noreferrer">LinkedIn</a>
+      </div>
+      <div className="footer-col">
+        <h4>Connect</h4>
+        <a href="mailto:hello@vanta.studio">hello@vanta.studio</a>
+      </div>
+    </div>
+    <div className="container footer-bottom">
+      <span>© 2025 Vanta Studio. All rights reserved.</span>
       <div style={{ display: 'flex', gap: '1rem' }}>
         <a href="https://twitter.com" target="_blank" rel="noopener noreferrer" className="social-icon" aria-label="Twitter">
           <TwitterIcon />
@@ -872,10 +900,6 @@ const Footer = () => (
           <LinkedInIcon />
         </a>
       </div>
-    </div>
-    <div className="container footer-bottom">
-      <span>© 2025 Vanta Studio. All rights reserved.</span>
-      <span>Built with Kimi K2.6</span>
     </div>
   </footer>
 );
@@ -890,10 +914,13 @@ function App() {
   const audio = useAudio();
   const lenisRef = useLenis();
   const [trailActive, setTrailActive] = useState(false);
+  
+  useVelocitySkew();
 
   return (
     <div className="app">
       <GrainOverlay />
+      <Particles />
       <CustomCursor />
       <CursorTrail active={trailActive} />
       <Navbar audio={audio} lenisRef={lenisRef} />
@@ -901,10 +928,12 @@ function App() {
         onMouseEnter={() => setTrailActive(true)}
         onMouseLeave={() => setTrailActive(false)}
       />
+      <div className="section-transition" />
       <NoBoringBrands />
-      <HorizontalScroll />
+      <div className="section-transition" />
+      <SelectedWork />
+      <div className="section-transition" />
       <Services audio={audio} />
-      <Pricing lenisRef={lenisRef} />
       <ValuesMarquee />
       <CTA audio={audio} />
       <Footer />
