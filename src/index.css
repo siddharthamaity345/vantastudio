@@ -31,6 +31,22 @@ html {
   -moz-osx-font-smoothing: grayscale;
 }
 
+html.lenis, html.lenis body {
+  height: auto;
+}
+
+.lenis.lenis-smooth {
+  scroll-behavior: auto !important;
+}
+
+.lenis.lenis-smooth [data-lenis-prevent] {
+  overscroll-behavior: contain;
+}
+
+.lenis.lenis-stopped {
+  overflow: hidden;
+}
+
 body {
   font-family: var(--font-body);
   background-color: var(--bg-primary);
@@ -146,6 +162,12 @@ body {
   z-index: 100;
   padding: 1.5rem var(--space-md);
   background: transparent;
+  transition: background 0.4s ease, backdrop-filter 0.4s ease;
+}
+
+.navbar.scrolled {
+  background: rgba(5, 15, 13, 0.85);
+  backdrop-filter: blur(12px);
 }
 
 .nav-container {
@@ -176,10 +198,27 @@ body {
   text-decoration: none;
   letter-spacing: 0.02em;
   transition: color 0.3s ease;
+  position: relative;
 }
 
-.nav-links a:hover {
+.nav-links a::after {
+  content: '';
+  position: absolute;
+  bottom: -4px;
+  left: 0;
+  width: 0;
+  height: 2px;
+  background: var(--accent-primary);
+  transition: width 0.3s ease;
+}
+
+.nav-links a:hover,
+.nav-links a.active {
   color: var(--accent-primary);
+}
+
+.nav-links a.active::after {
+  width: 100%;
 }
 
 .sound-toggle {
@@ -200,6 +239,54 @@ body {
   color: var(--accent-primary);
 }
 
+/* Mobile hamburger */
+.hamburger {
+  display: none;
+  flex-direction: column;
+  gap: 5px;
+  background: none;
+  border: none;
+  padding: 5px;
+  z-index: 101;
+}
+
+.hamburger span {
+  display: block;
+  width: 24px;
+  height: 2px;
+  background: var(--text-primary);
+  transition: all 0.3s ease;
+}
+
+@media (max-width: 768px) {
+  .nav-links {
+    position: fixed;
+    top: 0;
+    right: -100%;
+    width: 70%;
+    height: 100vh;
+    background: var(--bg-primary);
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 2rem;
+    transition: right 0.4s ease;
+    padding: 2rem;
+  }
+
+  .nav-links.open {
+    right: 0;
+  }
+
+  .hamburger {
+    display: flex;
+  }
+
+  .nav-links a {
+    font-size: 1.25rem;
+  }
+}
+
 /* ===== BUTTONS ===== */
 .cta-btn {
   font-family: var(--font-body);
@@ -218,6 +305,27 @@ body {
 .cta-btn:hover {
   transform: translateY(-2px);
   box-shadow: 0 4px 20px rgba(148, 255, 229, 0.3);
+}
+
+.cta-btn-outline {
+  font-family: var(--font-body);
+  font-size: 0.85rem;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  padding: 0.75rem 1.5rem;
+  background: transparent;
+  color: var(--text-primary);
+  border: 2px solid var(--text-primary);
+  border-radius: 4px;
+  transition: all 0.3s ease;
+  width: 100%;
+  margin-top: 1.5rem;
+}
+
+.cta-btn-outline:hover {
+  background: var(--text-primary);
+  color: var(--bg-primary);
 }
 
 /* ===== HERO ===== */
@@ -332,6 +440,8 @@ body {
   transition: transform 0.3s ease, box-shadow 0.3s ease;
   position: relative;
   overflow: hidden;
+  display: flex;
+  flex-direction: column;
 }
 
 .pricing-card:hover {
@@ -437,8 +547,5 @@ footer a:hover {
   }
   .hero-headline {
     font-size: 14vw;
-  }
-  .nav-links {
-    display: none;
   }
 }

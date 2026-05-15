@@ -1,9 +1,44 @@
 import { useEffect, useRef, useState, useMemo, useCallback } from 'react';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
+import Lenis from 'lenis';
 import './index.css';
 
 gsap.registerPlugin(ScrollTrigger);
+
+/* ===== LENIS SMOOTH SCROLL ===== */
+const useLenis = () => {
+  const lenisRef = useRef(null);
+
+  useEffect(() => {
+    const lenis = new Lenis({
+      duration: 1.2,
+      easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
+      smoothWheel: true,
+    });
+
+    lenisRef.current = lenis;
+
+    function raf(time) {
+      lenis.raf(time);
+      requestAnimationFrame(raf);
+    }
+    requestAnimationFrame(raf);
+
+    // Sync Lenis with GSAP ScrollTrigger
+    lenis.on('scroll', ScrollTrigger.update);
+    gsap.ticker.add((time) => {
+      lenis.raf(time * 1000);
+    });
+    gsap.ticker.lagSmoothing(0);
+
+    return () => {
+      lenis.destroy();
+    };
+  }, []);
+
+  return lenisRef;
+};
 
 /* ===== AUDIO SYSTEM ===== */
 const useAudio = () => {
@@ -236,8 +271,43 @@ const Sticker = ({ type, color, size, top, left, delay = 0 }) => {
 };
 
 /* ===== NAVBAR ===== */
-const Navbar = ({ audio }) => {
+const Navbar = ({ audio, lenisRef }) => {
   const navRef = useRef(null);
+  const [scrolled, setScrolled] = useState(false);
+  const [mobileOpen, setMobileOpen] = useState(false);
+  const [activeSection, setActiveSection] = useState('');
+
+  const scrollTo = (id) => {
+    setMobileOpen(false);
+    const el = document.getElementById(id);
+    if (el && lenisRef.current) {
+      lenisRef.current.scrollTo(el, { offset: -80 });
+    }
+  };
+
+  useEffect(() => {
+    const onScroll = () => {
+      setScrolled(window.scrollY > 100);
+    };
+    window.addEventListener('scroll', onScroll);
+
+    // Active section detection
+    const sections = ['hero', 'noboring', 'services', 'pricing', 'contact'];
+    sections.forEach(id => {
+      ScrollTrigger.create({
+        trigger: `#${id}`,
+        start: 'top center',
+        end: 'bottom center',
+        onEnter: () => setActiveSection(id),
+        onEnterBack: () => setActiveSection(id),
+      });
+    });
+
+    return () => {
+      window.removeEventListener('scroll', onScroll);
+      ScrollTrigger.getAll().forEach(t => t.kill());
+    };
+  }, []);
 
   useEffect(() => {
     const ctx = gsap.context(() => {
@@ -253,19 +323,36 @@ const Navbar = ({ audio }) => {
     return () => ctx.revert();
   }, []);
 
+  const navLink = (id, label) => (
+    <a
+      href={`#${id}`}
+      className={activeSection === id ? 'active' : ''}
+      onClick={(e) => { e.preventDefault(); scrollTo(id); }}
+    >
+      {label}
+    </a>
+  );
+
   return (
-    <nav ref={navRef} className="navbar">
+    <nav ref={navRef} className={`navbar ${scrolled ? 'scrolled' : ''}`}>
       <div className="nav-container">
         <div className="nav-item logo font-display">VANTA STUDIO</div>
-        <div className="nav-item nav-links">
-          <a href="#work">Work</a>
-          <a href="#studio">Studio</a>
-          <a href="#contact">Contact</a>
+        <div className={`nav-item nav-links ${mobileOpen ? 'open' : ''}`}>
+          {navLink('hero', 'Work')}
+          {navLink('noboring', 'Studio')}
+          {navLink('contact', 'Contact')}
           <button className="sound-toggle" onClick={audio.toggleMute}>
             {audio.muted ? 'Sounds OFF' : 'Sounds ON'}
           </button>
         </div>
-        <button className="nav-item cta-btn">Start a Project</button>
+        <button className="hamburger" onClick={() => setMobileOpen(!mobileOpen)} aria-label="Menu">
+          <span></span>
+          <span></span>
+          <span></span>
+        </button>
+        <button className="nav-item cta-btn" onClick={() => scrollTo('contact')}>
+          Start a Project
+        </button>
       </div>
     </nav>
   );
@@ -428,7 +515,7 @@ const Services = ({ audio }) => {
 };
 
 /* ===== PRICING ===== */
-const Pricing = () => {
+const Pricing = ({ lenisRef }) => {
   const sectionRef = useRef(null);
 
   useEffect(() => {
@@ -449,6 +536,13 @@ const Pricing = () => {
     return () => ctx.revert();
   }, []);
 
+  const scrollToContact = () => {
+    const el = document.getElementById('contact');
+    if (el && lenisRef.current) {
+      lenisRef.current.scrollTo(el, { offset: -80 });
+    }
+  };
+
   return (
     <section id="pricing" ref={sectionRef} className="pricing">
       <div className="container">
@@ -457,9 +551,9 @@ const Pricing = () => {
         </h2>
         <div className="pricing-grid">
           {[
-            { name: 'Starter', price: 'Free', color: 'var(--accent-primary)', benefits: ['Brand audit', 'Strategy call', 'Community access'] },
-            { name: 'Growth', price: '$2,500/mo', color: 'var(--accent-secondary)', benefits: ['Dedicated designer', 'Weekly sprints', 'Priority support'] },
-            { name: 'Partner', price: 'Custom', color: 'var(--accent-tertiary)', benefits: ['Full team embed', 'Quarterly planning', 'White-glove delivery'] },
+            { name: 'Starter', price: 'Free', color: 'var(--accent-primary)', benefits: ['Brand audit', 'Strategy call', 'Community access'], cta: 'Get Started' },
+            { name: 'Growth', price: '$2,500/mo', color: 'var(--accent-secondary)', benefits: ['Dedicated designer', 'Weekly sprints', 'Priority support'], cta: 'Get Started' },
+            { name: 'Partner', price: 'Custom', color: 'var(--accent-tertiary)', benefits: ['Full team embed', 'Quarterly planning', 'White-glove delivery'], cta: 'Contact Us' },
           ].map((tier) => (
             <div
               key={tier.name}
@@ -473,11 +567,14 @@ const Pricing = () => {
               <div style={{ fontSize: '2rem', fontWeight: 700, marginBottom: '1.5rem' }}>
                 {tier.price}
               </div>
-              <ul style={{ listStyle: 'none', display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
+              <ul style={{ listStyle: 'none', display: 'flex', flexDirection: 'column', gap: '0.75rem', flex: 1 }}>
                 {tier.benefits.map(b => (
                   <li key={b} className="text-muted">• {b}</li>
                 ))}
               </ul>
+              <button className="cta-btn-outline" onClick={scrollToContact}>
+                {tier.cta}
+              </button>
             </div>
           ))}
         </div>
@@ -559,20 +656,21 @@ const Footer = () => (
 /* ===== APP ===== */
 function App() {
   const audio = useAudio();
+  const lenisRef = useLenis();
   const [trailActive, setTrailActive] = useState(false);
 
   return (
     <div className="app">
       <CustomCursor />
       <CursorTrail active={trailActive} />
-      <Navbar audio={audio} />
+      <Navbar audio={audio} lenisRef={lenisRef} />
       <Hero
         onMouseEnter={() => setTrailActive(true)}
         onMouseLeave={() => setTrailActive(false)}
       />
       <NoBoringBrands />
       <Services audio={audio} />
-      <Pricing />
+      <Pricing lenisRef={lenisRef} />
       <ValuesMarquee />
       <CTA audio={audio} />
       <Footer />
