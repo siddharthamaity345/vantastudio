@@ -6,6 +6,17 @@ import './index.css';
 
 gsap.registerPlugin(ScrollTrigger);
 
+/* ===== VISUAL EFFECTS ===== */
+const GrainOverlay = () => <div className="grain-overlay" aria-hidden="true" />;
+
+const GradientMesh = () => (
+  <div className="gradient-mesh" aria-hidden="true">
+    <div className="gradient-blob" />
+    <div className="gradient-blob" />
+    <div className="gradient-blob" />
+  </div>
+);
+
 /* ===== SVG ICONS ===== */
 const BrandIcon = () => (
   <svg viewBox="0 0 56 56" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -280,7 +291,16 @@ const CursorTrail = ({ active }) => {
   const lastAdd = useRef(0);
 
   const images = useMemo(() =>
-    Array.from({ length: 8 }, (_, i) => `https://picsum.photos/300/400?random=${i + 50}`)
+    Array.from({ length: 8 }, (_, i) => `https://images.unsplash.com/photo-${[
+      '1618005182384-a83a8bd57fbe',
+      '1558618666-fcd25c85f82e',
+      '1614850523459-6b8c755b66b7',
+      '1573164713714-d95e436ab8d6',
+      '1550745165-9bc0b252726f',
+      '1614851099518-6b8c755b66b7',
+      '1558618047-3c8c76ca7d13',
+      '1618005198924-4c8e5e2e2e2e'
+    ][i]}?q=80&w=400&auto=format&fit=crop`)
   , []);
 
   useEffect(() => {
@@ -475,6 +495,8 @@ const Hero = ({ onMouseEnter, onMouseLeave }) => {
       onMouseEnter={onMouseEnter}
       onMouseLeave={onMouseLeave}
     >
+      <div className="hero-bg" aria-hidden="true" />
+      <div className="hero-vignette" aria-hidden="true" />
       <div className="container hero-container">
         <h1 className="font-display hero-headline">
           <span className="hero-line">
@@ -521,13 +543,13 @@ const NoBoringBrands = () => {
   }, []);
 
   return (
-    <section id="noboring" ref={sectionRef} className="no-boring">
+    <section id="noboring" ref={sectionRef} className="no-boring angle-top">
       <Sticker type="star" color="#94FFE5" size={40} top="10%" left="85%" delay={0} />
       <Sticker type="circle" color="#FF6B35" size={24} top="70%" left="10%" delay={1} />
       <Sticker type="diamond" color="#7B4FD4" size={32} top="30%" left="5%" delay={2} />
       <Sticker type="cross" color="#94FFE5" size={28} top="80%" left="80%" delay={1.5} />
       <div className="container">
-        <h2 className="font-display" style={{ fontSize: '8vw', lineHeight: 0.9 }}>
+        <h2 className="font-display" style={{ fontSize: 'clamp(3rem, 8vw, 10rem)', lineHeight: 0.88, letterSpacing: '-0.02em' }}>
           <span className="no-boring-word" style={{ display: 'inline-block', marginRight: '0.12em' }}>NO</span>
           <span className="no-boring-word" style={{ display: 'inline-block', marginRight: '0.12em' }}>BORING</span>
           <br />
@@ -571,9 +593,9 @@ const Services = ({ audio }) => {
   ];
 
   return (
-    <section id="services" ref={sectionRef} className="services">
+    <section id="services" ref={sectionRef} className="services angle-bottom">
       <div className="container">
-        <h2 className="font-display" style={{ fontSize: '6vw', marginBottom: 'var(--space-lg)' }}>
+        <h2 className="font-display" style={{ fontSize: 'clamp(2rem, 6vw, 8rem)', marginBottom: 'var(--space-lg)', letterSpacing: '-0.02em' }}>
           WHAT WE DO
         </h2>
         <div className="services-grid">
@@ -634,9 +656,9 @@ const Pricing = ({ lenisRef }) => {
   ];
 
   return (
-    <section id="pricing" ref={sectionRef} className="pricing">
+    <section id="pricing" ref={sectionRef} className="pricing angle-top">
       <div className="container">
-        <h2 className="font-display" style={{ fontSize: '6vw', marginBottom: 'var(--space-lg)' }}>
+        <h2 className="font-display" style={{ fontSize: 'clamp(2rem, 6vw, 8rem)', marginBottom: 'var(--space-lg)', letterSpacing: '-0.02em' }}>
           MEMBERSHIP
         </h2>
         <div className="pricing-grid">
@@ -696,7 +718,7 @@ const CTA = ({ audio }) => {
       <Sticker type="circle" color="#94FFE5" size={20} top="75%" left="75%" delay={1} />
       <Sticker type="diamond" color="#7B4FD4" size={28} top="20%" left="80%" delay={2} />
       <div className="container">
-        <h2 className="font-display" style={{ fontSize: '7vw', marginBottom: '1.5rem' }}>
+        <h2 className="font-display" style={{ fontSize: 'clamp(2rem, 7vw, 9rem)', marginBottom: '1.5rem', letterSpacing: '-0.02em' }}>
           READY TO BUILD SOMETHING UNFORGETTABLE?
         </h2>
         <p className="text-muted" style={{ fontSize: '1.25rem', maxWidth: '600px', margin: '0 auto 2rem' }}>
@@ -753,6 +775,8 @@ function App() {
 
   return (
     <div className="app">
+      <GrainOverlay />
+      <GradientMesh />
       <CustomCursor />
       <CursorTrail active={trailActive} />
       <Navbar audio={audio} lenisRef={lenisRef} />
