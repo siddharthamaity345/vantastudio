@@ -376,12 +376,65 @@ const Sticker = ({ type, color, size, top, left, delay = 0 }) => {
   );
 };
 
+/* ===== TEXT SCRAMBLE HOOK ===== */
+const useTextScramble = () => {
+  const chars = '!<>-_\\/[]{}—=+*^?#________';
+  
+  const scramble = useCallback((element, newText) => {
+    const oldText = element.innerText;
+    const length = Math.max(oldText.length, newText.length);
+    const promise = new Promise((resolve) => {
+      let frame = 0;
+      const queue = [];
+      for (let i = 0; i < length; i++) {
+        const from = oldText[i] || '';
+        const to = newText[i] || '';
+        const start = Math.floor(Math.random() * 20);
+        const end = start + Math.floor(Math.random() * 20);
+        queue.push({ from, to, start, end });
+      }
+      
+      const update = () => {
+        let output = '';
+        let complete = 0;
+        for (let i = 0; i < length; i++) {
+          let { from, to, start, end } = queue[i];
+          let char;
+          if (frame >= end) {
+            complete++;
+            output += to;
+          } else if (frame >= start) {
+            if (!char || Math.random() < 0.28) {
+              char = chars[Math.floor(Math.random() * chars.length)];
+            }
+            output += `<span style="color: var(--accent-primary)">${char}</span>`;
+          } else {
+            output += from;
+          }
+        }
+        element.innerHTML = output;
+        if (complete === length) {
+          resolve();
+        } else {
+          frame++;
+          requestAnimationFrame(update);
+        }
+      };
+      update();
+    });
+    return promise;
+  }, []);
+
+  return scramble;
+};
+
 /* ===== NAVBAR ===== */
 const Navbar = ({ audio, lenisRef }) => {
   const navRef = useRef(null);
   const [scrolled, setScrolled] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
   const [activeSection, setActiveSection] = useState('');
+  const scramble = useTextScramble();
 
   const scrollTo = (id) => {
     setMobileOpen(false);
@@ -427,11 +480,16 @@ const Navbar = ({ audio, lenisRef }) => {
     return () => ctx.revert();
   }, []);
 
+  const handleNavHover = (e, text) => {
+    scramble(e.target, text);
+  };
+
   const navLink = (id, label) => (
     <a
       href={`#${id}`}
       className={activeSection === id ? 'active' : ''}
       onClick={(e) => { e.preventDefault(); scrollTo(id); }}
+      onMouseEnter={(e) => handleNavHover(e, label)}
     >
       {label}
     </a>
@@ -462,9 +520,71 @@ const Navbar = ({ audio, lenisRef }) => {
   );
 };
 
+/* ===== MAGNETIC BUTTON ===== */
+const MagneticButton = ({ children, className, onClick, style }) => {
+  const btnRef = useRef(null);
+  const boundRef = useRef({ x: 0, y: 0, width: 0, height: 0 });
+
+  useEffect(() => {
+    const btn = btnRef.current;
+    if (!btn) return;
+
+    const updateBounds = () => {
+      const rect = btn.getBoundingClientRect();
+      boundRef.current = { 
+        x: rect.left + rect.width / 2, 
+        y: rect.top + rect.height / 2,
+        width: rect.width,
+        height: rect.height
+      };
+    };
+
+    const onMove = (e) => {
+      const { x, y, width, height } = boundRef.current;
+      const distX = e.clientX - x;
+      const distY = e.clientY - y;
+      const dist = Math.sqrt(distX * distX + distY * distY);
+      const maxDist = Math.max(width, height) * 0.8;
+
+      if (dist < maxDist) {
+        const strength = (maxDist - dist) / maxDist;
+        const moveX = distX * strength * 0.3;
+        const moveY = distY * strength * 0.3;
+        btn.style.transform = `translate(${moveX}px, ${moveY}px)`;
+      } else {
+        btn.style.transform = 'translate(0, 0)';
+      }
+    };
+
+    const onLeave = () => {
+      btn.style.transform = 'translate(0, 0)';
+    };
+
+    updateBounds();
+    window.addEventListener('mousemove', onMove);
+    window.addEventListener('resize', updateBounds);
+    btn.addEventListener('mouseleave', onLeave);
+
+    return () => {
+      window.removeEventListener('mousemove', onMove);
+      window.removeEventListener('resize', updateBounds);
+      btn.removeEventListener('mouseleave', onLeave);
+    };
+  }, []);
+
+  return (
+    <div ref={btnRef} className={`magnetic-btn ${className || ''}`} style={{ transition: 'transform 0.2s ease-out', ...style }}>
+      <button className={className} onClick={onClick} style={{ ...style, transform: 'none' }}>
+        {children}
+      </button>
+    </div>
+  );
+};
+
 /* ===== HERO ===== */
 const Hero = ({ onMouseEnter, onMouseLeave }) => {
   const heroRef = useRef(null);
+  const skewRef = useRef({ skew: 0 });
 
   useEffect(() => {
     const ctx = gsap.context(() => {
@@ -483,6 +603,28 @@ const Hero = ({ onMouseEnter, onMouseLeave }) => {
         ease: 'power3.out',
         delay: 1.2,
       });
+
+      // Scroll-based skew on hero text
+      ScrollTrigger.create({
+        trigger: heroRef.current,
+        start: 'top top',
+        end: 'bottom top',
+        onUpdate: (self) => {
+          const velocity = self.getVelocity();
+          const skewAmount = Math.min(Math.max(velocity / -300, -3), 3);
+          gsap.to(skewRef.current, {
+            skew: skewAmount,
+            duration: 0.3,
+            ease: 'power2.out',
+            onUpdate: () => {
+              const headline = heroRef.current?.querySelector('.hero-headline');
+              if (headline) {
+                headline.style.transform = `skewY(${skewRef.current.skew}deg)`;
+              }
+            }
+          });
+        }
+      });
     }, heroRef);
     return () => ctx.revert();
   }, []);
@@ -498,7 +640,7 @@ const Hero = ({ onMouseEnter, onMouseLeave }) => {
       <div className="hero-bg" aria-hidden="true" />
       <div className="hero-vignette" aria-hidden="true" />
       <div className="container hero-container">
-        <h1 className="font-display hero-headline">
+        <h1 className="font-display hero-headline velocity-skew">
           <span className="hero-line">
             <span className="hero-word hero-bold">YOUR</span>
             <span className="hero-word hero-bold">BRAND</span>
@@ -680,9 +822,9 @@ const Pricing = ({ lenisRef }) => {
                   <li key={b} className="text-muted">• {b}</li>
                 ))}
               </ul>
-              <button className="cta-btn-outline" onClick={scrollToContact}>
+              <MagneticButton className="cta-btn-outline" onClick={scrollToContact}>
                 {tier.cta}
-              </button>
+              </MagneticButton>
             </div>
           ))}
         </div>
@@ -724,13 +866,9 @@ const CTA = ({ audio }) => {
         <p className="text-muted" style={{ fontSize: '1.25rem', maxWidth: '600px', margin: '0 auto 2rem' }}>
           Book a call with our team. No decks. No fluff. Just a real conversation.
         </p>
-        <button
-          className="cta-btn"
-          style={{ fontSize: '1.25rem', padding: '1rem 2.5rem' }}
-          onClick={audio.playClick}
-        >
+        <MagneticButton className="cta-btn" style={{ fontSize: '1.25rem', padding: '1rem 2.5rem' }} onClick={audio.playClick}>
           Book a Call
-        </button>
+        </MagneticButton>
       </div>
     </section>
   );

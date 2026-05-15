@@ -399,12 +399,19 @@ body {
   border-radius: 4px;
   transition: all 0.3s ease;
   width: 100%;
-  margin-top: 1.5rem;
+  margin-top: auto;
 }
 
 .cta-btn-outline:hover {
   background: var(--text-primary);
   color: var(--bg-primary);
+}
+
+/* ===== MAGNETIC BUTTON ===== */
+.magnetic-btn {
+  position: relative;
+  display: inline-block;
+  transition: transform 0.2s ease-out;
 }
 
 /* ===== HERO ===== */
@@ -483,6 +490,11 @@ body {
   line-height: 1.5;
   will-change: transform, opacity;
   color: rgba(255,255,255,0.7);
+}
+
+/* ===== VELOCITY SKEW ===== */
+.velocity-skew {
+  will-change: transform;
 }
 
 /* ===== ANGLED SECTION SEPARATOR ===== */
@@ -741,6 +753,10 @@ footer a:hover {
   
   body, a, button {
     cursor: auto !important;
+  }
+  
+  .velocity-skew {
+    transform: none !important;
   }
 }
 
