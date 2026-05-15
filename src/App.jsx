@@ -33,9 +33,7 @@ const useAudio = () => {
       gain.connect(ctx.destination);
       osc.start();
       osc.stop(ctx.currentTime + duration);
-    } catch (e) {
-      // Audio context not allowed yet
-    }
+    } catch (e) {}
   }, [muted]);
 
   const playHover = useCallback((index) => {
@@ -155,7 +153,7 @@ const CustomCursor = () => {
 };
 
 /* ===== CURSOR IMAGE TRAIL ===== */
-const CursorTrail = () => {
+const CursorTrail = ({ active }) => {
   const [items, setItems] = useState([]);
   const idCounter = useRef(0);
   const lastAdd = useRef(0);
@@ -166,6 +164,7 @@ const CursorTrail = () => {
 
   useEffect(() => {
     const onMove = (e) => {
+      if (!active) return;
       const now = performance.now();
       if (now - lastAdd.current < 80) return;
       lastAdd.current = now;
@@ -185,7 +184,7 @@ const CursorTrail = () => {
 
     window.addEventListener('mousemove', onMove);
     return () => window.removeEventListener('mousemove', onMove);
-  }, [images]);
+  }, [images, active]);
 
   return (
     <div className="cursor-trail">
@@ -273,7 +272,7 @@ const Navbar = ({ audio }) => {
 };
 
 /* ===== HERO ===== */
-const Hero = () => {
+const Hero = ({ onMouseEnter, onMouseLeave }) => {
   const heroRef = useRef(null);
 
   useEffect(() => {
@@ -298,7 +297,13 @@ const Hero = () => {
   }, []);
 
   return (
-    <section id="hero" ref={heroRef} className="hero">
+    <section
+      id="hero"
+      ref={heroRef}
+      className="hero"
+      onMouseEnter={onMouseEnter}
+      onMouseLeave={onMouseLeave}
+    >
       <div className="container hero-container">
         <h1 className="font-display hero-headline">
           <span className="hero-line">
@@ -554,13 +559,17 @@ const Footer = () => (
 /* ===== APP ===== */
 function App() {
   const audio = useAudio();
+  const [trailActive, setTrailActive] = useState(false);
 
   return (
     <div className="app">
       <CustomCursor />
-      <CursorTrail />
+      <CursorTrail active={trailActive} />
       <Navbar audio={audio} />
-      <Hero />
+      <Hero
+        onMouseEnter={() => setTrailActive(true)}
+        onMouseLeave={() => setTrailActive(false)}
+      />
       <NoBoringBrands />
       <Services audio={audio} />
       <Pricing />
