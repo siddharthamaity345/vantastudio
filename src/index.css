@@ -1,0 +1,289 @@
+@import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,700;1,9..40,400&display=swap');
+
+:root {
+  --bg-primary: #050F0D;
+  --bg-secondary: #062629;
+  --accent-primary: #94FFE5;
+  --accent-secondary: #FF6B35;
+  --accent-tertiary: #7B4FD4;
+  --text-primary: #FFFFFF;
+  --text-muted: #8A9E9B;
+  --font-display: 'Bebas Neue', sans-serif;
+  --font-body: 'DM Sans', sans-serif;
+  --space-xs: 0.5rem;
+  --space-sm: 1rem;
+  --space-md: 2rem;
+  --space-lg: 4rem;
+  --space-xl: 8rem;
+  --ease-out: cubic-bezier(0.23, 1, 0.32, 1);
+  --ease-in-out: cubic-bezier(0.77, 0, 0.175, 1);
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html {
+  font-size: 16px;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+body {
+  font-family: var(--font-body);
+  background-color: var(--bg-primary);
+  color: var(--text-primary);
+  overflow-x: hidden;
+  line-height: 1.5;
+}
+
+.font-display {
+  font-family: var(--font-display);
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+  line-height: 0.95;
+}
+
+.text-muted {
+  color: var(--text-muted);
+}
+
+.container {
+  width: 100%;
+  max-width: 1400px;
+  margin: 0 auto;
+  padding-left: var(--space-md);
+  padding-right: var(--space-md);
+}
+
+::selection {
+  background: var(--accent-primary);
+  color: var(--bg-primary);
+}
+
+/* ===== NAVBAR ===== */
+.navbar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  z-index: 100;
+  padding: 1.5rem var(--space-md);
+  background: transparent;
+}
+
+.nav-container {
+  max-width: 1400px;
+  margin: 0 auto;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.logo {
+  font-size: 1.5rem;
+  letter-spacing: 0.05em;
+  color: var(--text-primary);
+}
+
+.nav-links {
+  display: flex;
+  gap: 2.5rem;
+}
+
+.nav-links a {
+  font-family: var(--font-body);
+  font-size: 0.9rem;
+  font-weight: 500;
+  color: var(--text-primary);
+  text-decoration: none;
+  letter-spacing: 0.02em;
+  transition: color 0.3s ease;
+}
+
+.nav-links a:hover {
+  color: var(--accent-primary);
+}
+
+/* ===== BUTTONS ===== */
+.cta-btn {
+  font-family: var(--font-body);
+  font-size: 0.85rem;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  padding: 0.75rem 1.5rem;
+  background: var(--text-primary);
+  color: var(--bg-primary);
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.cta-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 20px rgba(148, 255, 229, 0.3);
+}
+
+/* ===== HERO ===== */
+.hero {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  position: relative;
+  padding-top: 80px;
+}
+
+.hero-container {
+  width: 100%;
+}
+
+.hero-headline {
+  font-size: 11vw;
+  line-height: 0.9;
+  margin-bottom: 2rem;
+}
+
+.hero-line {
+  display: block;
+  overflow: hidden;
+}
+
+.hero-word {
+  display: inline-block;
+  margin-right: 0.12em;
+  will-change: transform, opacity;
+}
+
+.hero-bold {
+  font-weight: 400;
+  color: var(--text-primary);
+}
+
+.hero-thin {
+  font-weight: 300;
+  font-family: var(--font-body);
+  font-size: 0.82em;
+  letter-spacing: 0.08em;
+  opacity: 0.95;
+}
+
+.hero-subtitle {
+  font-size: 1.25rem;
+  max-width: 500px;
+  line-height: 1.5;
+  will-change: transform, opacity;
+}
+
+/* ===== SECTION 2: NO BORING BRANDS ===== */
+.no-boring {
+  padding: var(--space-xl) 0;
+  position: relative;
+  overflow: hidden;
+}
+
+/* ===== SECTION 3: SERVICES ===== */
+.services {
+  padding: var(--space-xl) 0;
+}
+
+.services-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 1.5rem;
+}
+
+.service-card {
+  border: 1px solid rgba(148, 255, 229, 0.2);
+  padding: 2rem;
+  border-radius: 12px;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.service-card:hover {
+  transform: translateY(-8px);
+  box-shadow: 0 8px 30px rgba(148, 255, 229, 0.15);
+}
+
+.card-icon {
+  width: 48px;
+  height: 48px;
+  background: var(--accent-primary);
+  border-radius: 50%;
+  margin-bottom: 1rem;
+}
+
+/* ===== SECTION 4: PRICING ===== */
+.pricing {
+  padding: var(--space-xl) 0;
+  background: var(--bg-secondary);
+}
+
+.pricing-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1.5rem;
+}
+
+.pricing-card {
+  padding: 2.5rem;
+  border-radius: 16px;
+  transition: transform 0.3s ease;
+}
+
+.pricing-card:hover {
+  transform: translateY(-4px);
+}
+
+.tier-icon {
+  width: 64px;
+  height: 64px;
+  border-radius: 50%;
+  margin-bottom: 1.5rem;
+}
+
+/* ===== SECTION 5: MARQUEE ===== */
+.marquee {
+  padding: var(--space-lg) 0;
+  overflow: hidden;
+}
+
+.marquee-track {
+  font-size: 6vw;
+  white-space: nowrap;
+  color: var(--accent-primary);
+}
+
+/* ===== SECTION 6: CTA ===== */
+.cta {
+  padding: var(--space-xl) 0;
+  text-align: center;
+}
+
+/* ===== FOOTER ===== */
+footer {
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+  padding: var(--space-md) 0;
+}
+
+footer a {
+  color: var(--text-primary);
+  text-decoration: none;
+  font-size: 0.9rem;
+  transition: color 0.3s ease;
+}
+
+footer a:hover {
+  color: var(--accent-primary);
+}
+
+.footer-bottom {
+  margin-top: 1rem;
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.75rem;
+  color: var(--text-muted);
+}
