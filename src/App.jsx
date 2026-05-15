@@ -6,6 +6,93 @@ import './index.css';
 
 gsap.registerPlugin(ScrollTrigger);
 
+/* ===== SVG ICONS ===== */
+const BrandIcon = () => (
+  <svg viewBox="0 0 56 56" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <circle cx="28" cy="28" r="26" stroke="#94FFE5" strokeWidth="2"/>
+    <path d="M18 28C18 22.4772 22.4772 18 28 18C33.5228 18 38 22.4772 38 28" stroke="#94FFE5" strokeWidth="2" strokeLinecap="round"/>
+    <circle cx="28" cy="28" r="6" fill="#94FFE5"/>
+    <path d="M28 34V42" stroke="#94FFE5" strokeWidth="2" strokeLinecap="round"/>
+    <path d="M22 40L28 42L34 40" stroke="#94FFE5" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+  </svg>
+);
+
+const MotionIcon = () => (
+  <svg viewBox="0 0 56 56" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <rect x="4" y="12" width="48" height="32" rx="4" stroke="#94FFE5" strokeWidth="2"/>
+    <path d="M22 24L32 28L22 32V24Z" fill="#94FFE5"/>
+    <circle cx="42" cy="28" r="3" fill="#94FFE5" opacity="0.5"/>
+    <path d="M8 44L12 48M48 44L44 48" stroke="#94FFE5" strokeWidth="2" strokeLinecap="round"/>
+  </svg>
+);
+
+const WebIcon = () => (
+  <svg viewBox="0 0 56 56" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <rect x="6" y="8" width="44" height="40" rx="4" stroke="#94FFE5" strokeWidth="2"/>
+    <line x1="6" y1="18" x2="50" y2="18" stroke="#94FFE5" strokeWidth="2"/>
+    <circle cx="14" cy="13" r="2" fill="#94FFE5"/>
+    <circle cx="22" cy="13" r="2" fill="#94FFE5" opacity="0.5"/>
+    <circle cx="30" cy="13" r="2" fill="#94FFE5" opacity="0.3"/>
+    <rect x="14" y="26" width="12" height="16" rx="2" stroke="#94FFE5" strokeWidth="1.5"/>
+    <rect x="30" y="26" width="12" height="8" rx="2" stroke="#94FFE5" strokeWidth="1.5"/>
+    <line x1="30" y1="40" x2="42" y2="40" stroke="#94FFE5" strokeWidth="1.5" strokeLinecap="round"/>
+  </svg>
+);
+
+const CampaignIcon = () => (
+  <svg viewBox="0 0 56 56" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <path d="M8 28C8 16.9543 16.9543 8 28 8C39.0457 8 48 16.9543 48 28" stroke="#94FFE5" strokeWidth="2" strokeLinecap="round"/>
+    <path d="M48 28L44 20L40 28" stroke="#94FFE5" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+    <circle cx="28" cy="28" r="8" stroke="#94FFE5" strokeWidth="2"/>
+    <path d="M28 24V28L31 31" stroke="#94FFE5" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+    <path d="M20 44L24 40L28 44L32 40L36 44" stroke="#94FFE5" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+  </svg>
+);
+
+const SparkIcon = () => (
+  <svg viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <path d="M32 8L36 24L52 28L36 32L32 48L28 32L12 28L28 24L32 8Z" fill="#94FFE5"/>
+    <circle cx="32" cy="28" r="4" fill="#050F0D"/>
+  </svg>
+);
+
+const FlameIcon = () => (
+  <svg viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <path d="M32 12C32 12 20 24 20 36C20 44 25 52 32 52C39 52 44 44 44 36C44 24 32 12 32 12Z" stroke="#FF6B35" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"/>
+    <path d="M32 20C32 20 26 28 26 36C26 40 28 44 32 44" stroke="#FF6B35" strokeWidth="2" strokeLinecap="round"/>
+  </svg>
+);
+
+const CrownIcon = () => (
+  <svg viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <path d="M12 48L16 20L24 28L32 16L40 28L48 20L52 48H12Z" stroke="#7B4FD4" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"/>
+    <circle cx="16" cy="20" r="3" fill="#7B4FD4"/>
+    <circle cx="32" cy="16" r="3" fill="#7B4FD4"/>
+    <circle cx="48" cy="20" r="3" fill="#7B4FD4"/>
+    <line x1="20" y1="40" x2="44" y2="40" stroke="#7B4FD4" strokeWidth="2" strokeLinecap="round"/>
+  </svg>
+);
+
+const TwitterIcon = () => (
+  <svg viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+    <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/>
+  </svg>
+);
+
+const InstagramIcon = () => (
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" xmlns="http://www.w3.org/2000/svg">
+    <rect x="2" y="2" width="20" height="20" rx="5" ry="5"/>
+    <circle cx="12" cy="12" r="5"/>
+    <circle cx="17.5" cy="6.5" r="1.5" fill="currentColor" stroke="none"/>
+  </svg>
+);
+
+const LinkedInIcon = () => (
+  <svg viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+    <path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/>
+  </svg>
+);
+
 /* ===== LENIS SMOOTH SCROLL ===== */
 const useLenis = () => {
   const lenisRef = useRef(null);
@@ -25,7 +112,6 @@ const useLenis = () => {
     }
     requestAnimationFrame(raf);
 
-    // Sync Lenis with GSAP ScrollTrigger
     lenis.on('scroll', ScrollTrigger.update);
     gsap.ticker.add((time) => {
       lenis.raf(time * 1000);
@@ -291,7 +377,6 @@ const Navbar = ({ audio, lenisRef }) => {
     };
     window.addEventListener('scroll', onScroll);
 
-    // Active section detection
     const sections = ['hero', 'noboring', 'services', 'pricing', 'contact'];
     sections.forEach(id => {
       ScrollTrigger.create({
@@ -305,7 +390,6 @@ const Navbar = ({ audio, lenisRef }) => {
 
     return () => {
       window.removeEventListener('scroll', onScroll);
-      ScrollTrigger.getAll().forEach(t => t.kill());
     };
   }, []);
 
@@ -480,10 +564,10 @@ const Services = ({ audio }) => {
   }, []);
 
   const services = [
-    { name: 'Brand Identity', desc: 'Logos, systems, and guidelines that scale.' },
-    { name: 'Motion Design', desc: 'Animation that adds life to every interaction.' },
-    { name: 'Web Experiences', desc: 'Sites that perform and convert beautifully.' },
-    { name: 'Campaign Direction', desc: 'Creative strategy from concept to launch.' },
+    { name: 'Brand Identity', desc: 'Logos, systems, and guidelines that scale.', icon: <BrandIcon /> },
+    { name: 'Motion Design', desc: 'Animation that adds life to every interaction.', icon: <MotionIcon /> },
+    { name: 'Web Experiences', desc: 'Sites that perform and convert beautifully.', icon: <WebIcon /> },
+    { name: 'Campaign Direction', desc: 'Creative strategy from concept to launch.', icon: <CampaignIcon /> },
   ];
 
   return (
@@ -499,7 +583,7 @@ const Services = ({ audio }) => {
               className="service-card"
               onMouseEnter={() => audio.playHover(i)}
             >
-              <div className="card-icon" />
+              <div className="card-icon">{s.icon}</div>
               <h3 style={{ fontFamily: 'var(--font-body)', fontSize: '1.25rem', marginBottom: '0.5rem' }}>
                 {s.name}
               </h3>
@@ -543,6 +627,12 @@ const Pricing = ({ lenisRef }) => {
     }
   };
 
+  const tiers = [
+    { name: 'Starter', price: 'Free', color: 'var(--accent-primary)', icon: <SparkIcon />, benefits: ['Brand audit', 'Strategy call', 'Community access'], cta: 'Get Started' },
+    { name: 'Growth', price: '$2,500/mo', color: 'var(--accent-secondary)', icon: <FlameIcon />, benefits: ['Dedicated designer', 'Weekly sprints', 'Priority support'], cta: 'Get Started' },
+    { name: 'Partner', price: 'Custom', color: 'var(--accent-tertiary)', icon: <CrownIcon />, benefits: ['Full team embed', 'Quarterly planning', 'White-glove delivery'], cta: 'Contact Us' },
+  ];
+
   return (
     <section id="pricing" ref={sectionRef} className="pricing">
       <div className="container">
@@ -550,17 +640,13 @@ const Pricing = ({ lenisRef }) => {
           MEMBERSHIP
         </h2>
         <div className="pricing-grid">
-          {[
-            { name: 'Starter', price: 'Free', color: 'var(--accent-primary)', benefits: ['Brand audit', 'Strategy call', 'Community access'], cta: 'Get Started' },
-            { name: 'Growth', price: '$2,500/mo', color: 'var(--accent-secondary)', benefits: ['Dedicated designer', 'Weekly sprints', 'Priority support'], cta: 'Get Started' },
-            { name: 'Partner', price: 'Custom', color: 'var(--accent-tertiary)', benefits: ['Full team embed', 'Quarterly planning', 'White-glove delivery'], cta: 'Contact Us' },
-          ].map((tier) => (
+          {tiers.map((tier) => (
             <div
               key={tier.name}
               className="pricing-card"
               style={{ border: `2px solid ${tier.color}` }}
             >
-              <div className="tier-icon" style={{ background: tier.color }} />
+              <div className="tier-icon" style={{ color: tier.color }}>{tier.icon}</div>
               <h3 style={{ fontFamily: 'var(--font-body)', fontSize: '1.5rem', marginBottom: '0.5rem' }}>
                 {tier.name}
               </h3>
@@ -641,9 +727,15 @@ const Footer = () => (
         <a href="#contact">Contact</a>
       </div>
       <div style={{ display: 'flex', gap: '1rem' }}>
-        <span style={{ color: 'var(--text-muted)', fontSize: '0.85rem' }}>TW</span>
-        <span style={{ color: 'var(--text-muted)', fontSize: '0.85rem' }}>IG</span>
-        <span style={{ color: 'var(--text-muted)', fontSize: '0.85rem' }}>LI</span>
+        <a href="https://twitter.com" target="_blank" rel="noopener noreferrer" className="social-icon" aria-label="Twitter">
+          <TwitterIcon />
+        </a>
+        <a href="https://instagram.com" target="_blank" rel="noopener noreferrer" className="social-icon" aria-label="Instagram">
+          <InstagramIcon />
+        </a>
+        <a href="https://linkedin.com" target="_blank" rel="noopener noreferrer" className="social-icon" aria-label="LinkedIn">
+          <LinkedInIcon />
+        </a>
       </div>
     </div>
     <div className="container footer-bottom">
