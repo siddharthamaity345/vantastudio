@@ -6,17 +6,6 @@ import './index.css';
 
 gsap.registerPlugin(ScrollTrigger);
 
-/* ===== VISUAL EFFECTS ===== */
-const GrainOverlay = () => <div className="grain-overlay" aria-hidden="true" />;
-
-const GradientMesh = () => (
-  <div className="gradient-mesh" aria-hidden="true">
-    <div className="gradient-blob" />
-    <div className="gradient-blob" />
-    <div className="gradient-blob" />
-  </div>
-);
-
 /* ===== SVG ICONS ===== */
 const BrandIcon = () => (
   <svg viewBox="0 0 56 56" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -235,6 +224,38 @@ const useAudio = () => {
   return { muted, toggleMute, playHover, playClick };
 };
 
+/* ===== TEXT SCRAMBLE HOOK ===== */
+const useTextScramble = () => {
+  const chars = '!<>-_\\/[]{}—=+*^?#________';
+  
+  const scramble = useCallback((element, finalText) => {
+    let frame = 0;
+    const length = finalText.length;
+    
+    const update = () => {
+      let output = '';
+      for (let i = 0; i < length; i++) {
+        if (i < frame / 3) {
+          output += finalText[i];
+        } else {
+          output += chars[Math.floor(Math.random() * chars.length)];
+        }
+      }
+      element.textContent = output;
+      frame++;
+      if (frame / 3 < length) {
+        requestAnimationFrame(update);
+      } else {
+        element.textContent = finalText;
+      }
+    };
+    
+    update();
+  }, []);
+
+  return scramble;
+};
+
 /* ===== CUSTOM CURSOR ===== */
 const CustomCursor = () => {
   const cursorRef = useRef(null);
@@ -260,12 +281,12 @@ const CustomCursor = () => {
     raf = requestAnimationFrame(animate);
 
     const onOver = (e) => {
-      if (e.target.closest('a, button, .service-card, .pricing-card, .cta-btn')) {
+      if (e.target.closest('a, button, .service-card, .pricing-card, .magnetic-btn')) {
         cursorRef.current?.classList.add('hovering');
       }
     };
     const onOut = (e) => {
-      if (e.target.closest('a, button, .service-card, .pricing-card, .cta-btn')) {
+      if (e.target.closest('a, button, .service-card, .pricing-card, .magnetic-btn')) {
         cursorRef.current?.classList.remove('hovering');
       }
     };
@@ -284,6 +305,44 @@ const CustomCursor = () => {
   return <div ref={cursorRef} className="custom-cursor" />;
 };
 
+/* ===== MAGNETIC BUTTON ===== */
+const MagneticButton = ({ children, className, onClick, style }) => {
+  const btnRef = useRef(null);
+  const bounds = useRef(null);
+
+  const handleMouseMove = (e) => {
+    if (!btnRef.current || !bounds.current) return;
+    const { left, top, width, height } = bounds.current;
+    const x = e.clientX - left - width / 2;
+    const y = e.clientY - top - height / 2;
+    btnRef.current.style.transform = `translate(${x * 0.3}px, ${y * 0.3}px)`;
+  };
+
+  const handleMouseLeave = () => {
+    if (btnRef.current) {
+      btnRef.current.style.transform = 'translate(0, 0)';
+    }
+  };
+
+  const handleMouseEnter = () => {
+    bounds.current = btnRef.current.getBoundingClientRect();
+  };
+
+  return (
+    <button
+      ref={btnRef}
+      className={className}
+      onClick={onClick}
+      style={{ ...style, transition: 'transform 0.3s cubic-bezier(0.23, 1, 0.32, 1)' }}
+      onMouseMove={handleMouseMove}
+      onMouseLeave={handleMouseLeave}
+      onMouseEnter={handleMouseEnter}
+    >
+      {children}
+    </button>
+  );
+};
+
 /* ===== CURSOR IMAGE TRAIL ===== */
 const CursorTrail = ({ active }) => {
   const [items, setItems] = useState([]);
@@ -291,16 +350,7 @@ const CursorTrail = ({ active }) => {
   const lastAdd = useRef(0);
 
   const images = useMemo(() =>
-    Array.from({ length: 8 }, (_, i) => `https://images.unsplash.com/photo-${[
-      '1618005182384-a83a8bd57fbe',
-      '1558618666-fcd25c85f82e',
-      '1614850523459-6b8c755b66b7',
-      '1573164713714-d95e436ab8d6',
-      '1550745165-9bc0b252726f',
-      '1614851099518-6b8c755b66b7',
-      '1558618047-3c8c76ca7d13',
-      '1618005198924-4c8e5e2e2e2e'
-    ][i]}?q=80&w=400&auto=format&fit=crop`)
+    Array.from({ length: 8 }, (_, i) => `https://picsum.photos/300/400?random=${i + 50}`)
   , []);
 
   useEffect(() => {
@@ -376,65 +426,12 @@ const Sticker = ({ type, color, size, top, left, delay = 0 }) => {
   );
 };
 
-/* ===== TEXT SCRAMBLE HOOK ===== */
-const useTextScramble = () => {
-  const chars = '!<>-_\\/[]{}—=+*^?#________';
-  
-  const scramble = useCallback((element, newText) => {
-    const oldText = element.innerText;
-    const length = Math.max(oldText.length, newText.length);
-    const promise = new Promise((resolve) => {
-      let frame = 0;
-      const queue = [];
-      for (let i = 0; i < length; i++) {
-        const from = oldText[i] || '';
-        const to = newText[i] || '';
-        const start = Math.floor(Math.random() * 20);
-        const end = start + Math.floor(Math.random() * 20);
-        queue.push({ from, to, start, end });
-      }
-      
-      const update = () => {
-        let output = '';
-        let complete = 0;
-        for (let i = 0; i < length; i++) {
-          let { from, to, start, end } = queue[i];
-          let char;
-          if (frame >= end) {
-            complete++;
-            output += to;
-          } else if (frame >= start) {
-            if (!char || Math.random() < 0.28) {
-              char = chars[Math.floor(Math.random() * chars.length)];
-            }
-            output += `<span style="color: var(--accent-primary)">${char}</span>`;
-          } else {
-            output += from;
-          }
-        }
-        element.innerHTML = output;
-        if (complete === length) {
-          resolve();
-        } else {
-          frame++;
-          requestAnimationFrame(update);
-        }
-      };
-      update();
-    });
-    return promise;
-  }, []);
-
-  return scramble;
-};
-
 /* ===== NAVBAR ===== */
 const Navbar = ({ audio, lenisRef }) => {
   const navRef = useRef(null);
   const [scrolled, setScrolled] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
   const [activeSection, setActiveSection] = useState('');
-  const scramble = useTextScramble();
 
   const scrollTo = (id) => {
     setMobileOpen(false);
@@ -480,16 +477,11 @@ const Navbar = ({ audio, lenisRef }) => {
     return () => ctx.revert();
   }, []);
 
-  const handleNavHover = (e, text) => {
-    scramble(e.target, text);
-  };
-
   const navLink = (id, label) => (
     <a
       href={`#${id}`}
       className={activeSection === id ? 'active' : ''}
       onClick={(e) => { e.preventDefault(); scrollTo(id); }}
-      onMouseEnter={(e) => handleNavHover(e, label)}
     >
       {label}
     </a>
@@ -512,79 +504,17 @@ const Navbar = ({ audio, lenisRef }) => {
           <span></span>
           <span></span>
         </button>
-        <button className="nav-item cta-btn" onClick={() => scrollTo('contact')}>
+        <MagneticButton className="nav-item magnetic-btn" onClick={() => scrollTo('contact')}>
           Start a Project
-        </button>
+        </MagneticButton>
       </div>
     </nav>
-  );
-};
-
-/* ===== MAGNETIC BUTTON ===== */
-const MagneticButton = ({ children, className, onClick, style }) => {
-  const btnRef = useRef(null);
-  const boundRef = useRef({ x: 0, y: 0, width: 0, height: 0 });
-
-  useEffect(() => {
-    const btn = btnRef.current;
-    if (!btn) return;
-
-    const updateBounds = () => {
-      const rect = btn.getBoundingClientRect();
-      boundRef.current = { 
-        x: rect.left + rect.width / 2, 
-        y: rect.top + rect.height / 2,
-        width: rect.width,
-        height: rect.height
-      };
-    };
-
-    const onMove = (e) => {
-      const { x, y, width, height } = boundRef.current;
-      const distX = e.clientX - x;
-      const distY = e.clientY - y;
-      const dist = Math.sqrt(distX * distX + distY * distY);
-      const maxDist = Math.max(width, height) * 0.8;
-
-      if (dist < maxDist) {
-        const strength = (maxDist - dist) / maxDist;
-        const moveX = distX * strength * 0.3;
-        const moveY = distY * strength * 0.3;
-        btn.style.transform = `translate(${moveX}px, ${moveY}px)`;
-      } else {
-        btn.style.transform = 'translate(0, 0)';
-      }
-    };
-
-    const onLeave = () => {
-      btn.style.transform = 'translate(0, 0)';
-    };
-
-    updateBounds();
-    window.addEventListener('mousemove', onMove);
-    window.addEventListener('resize', updateBounds);
-    btn.addEventListener('mouseleave', onLeave);
-
-    return () => {
-      window.removeEventListener('mousemove', onMove);
-      window.removeEventListener('resize', updateBounds);
-      btn.removeEventListener('mouseleave', onLeave);
-    };
-  }, []);
-
-  return (
-    <div ref={btnRef} className={`magnetic-btn ${className || ''}`} style={{ transition: 'transform 0.2s ease-out', ...style }}>
-      <button className={className} onClick={onClick} style={{ ...style, transform: 'none' }}>
-        {children}
-      </button>
-    </div>
   );
 };
 
 /* ===== HERO ===== */
 const Hero = ({ onMouseEnter, onMouseLeave }) => {
   const heroRef = useRef(null);
-  const skewRef = useRef({ skew: 0 });
 
   useEffect(() => {
     const ctx = gsap.context(() => {
@@ -603,28 +533,6 @@ const Hero = ({ onMouseEnter, onMouseLeave }) => {
         ease: 'power3.out',
         delay: 1.2,
       });
-
-      // Scroll-based skew on hero text
-      ScrollTrigger.create({
-        trigger: heroRef.current,
-        start: 'top top',
-        end: 'bottom top',
-        onUpdate: (self) => {
-          const velocity = self.getVelocity();
-          const skewAmount = Math.min(Math.max(velocity / -300, -3), 3);
-          gsap.to(skewRef.current, {
-            skew: skewAmount,
-            duration: 0.3,
-            ease: 'power2.out',
-            onUpdate: () => {
-              const headline = heroRef.current?.querySelector('.hero-headline');
-              if (headline) {
-                headline.style.transform = `skewY(${skewRef.current.skew}deg)`;
-              }
-            }
-          });
-        }
-      });
     }, heroRef);
     return () => ctx.revert();
   }, []);
@@ -637,10 +545,9 @@ const Hero = ({ onMouseEnter, onMouseLeave }) => {
       onMouseEnter={onMouseEnter}
       onMouseLeave={onMouseLeave}
     >
-      <div className="hero-bg" aria-hidden="true" />
-      <div className="hero-vignette" aria-hidden="true" />
+      <div className="hero-bg" />
       <div className="container hero-container">
-        <h1 className="font-display hero-headline velocity-skew">
+        <h1 className="font-display hero-headline">
           <span className="hero-line">
             <span className="hero-word hero-bold">YOUR</span>
             <span className="hero-word hero-bold">BRAND</span>
@@ -685,13 +592,13 @@ const NoBoringBrands = () => {
   }, []);
 
   return (
-    <section id="noboring" ref={sectionRef} className="no-boring angle-top">
+    <section id="noboring" ref={sectionRef} className="no-boring">
       <Sticker type="star" color="#94FFE5" size={40} top="10%" left="85%" delay={0} />
       <Sticker type="circle" color="#FF6B35" size={24} top="70%" left="10%" delay={1} />
       <Sticker type="diamond" color="#7B4FD4" size={32} top="30%" left="5%" delay={2} />
       <Sticker type="cross" color="#94FFE5" size={28} top="80%" left="80%" delay={1.5} />
       <div className="container">
-        <h2 className="font-display" style={{ fontSize: 'clamp(3rem, 8vw, 10rem)', lineHeight: 0.88, letterSpacing: '-0.02em' }}>
+        <h2 className="font-display" style={{ fontSize: '8vw', lineHeight: 0.9 }}>
           <span className="no-boring-word" style={{ display: 'inline-block', marginRight: '0.12em' }}>NO</span>
           <span className="no-boring-word" style={{ display: 'inline-block', marginRight: '0.12em' }}>BORING</span>
           <br />
@@ -700,6 +607,67 @@ const NoBoringBrands = () => {
         <p className="text-muted" style={{ fontSize: '1.25rem', maxWidth: '480px', marginTop: '2rem' }}>
           We think every brand has an unforgettable version of itself. We find it.
         </p>
+      </div>
+    </section>
+  );
+};
+
+/* ===== HORIZONTAL SCROLL SECTION ===== */
+const HorizontalScroll = () => {
+  const sectionRef = useRef(null);
+  const trackRef = useRef(null);
+
+  useEffect(() => {
+    const section = sectionRef.current;
+    const track = trackRef.current;
+    if (!section || !track) return;
+
+    const scrollWidth = track.scrollWidth - window.innerWidth;
+
+    const ctx = gsap.context(() => {
+      gsap.to(track, {
+        x: -scrollWidth,
+        ease: 'none',
+        scrollTrigger: {
+          trigger: section,
+          start: 'top top',
+          end: () => `+=${scrollWidth}`,
+          pin: true,
+          scrub: 1,
+          invalidateOnRefresh: true,
+        },
+      });
+    });
+
+    return () => ctx.revert();
+  }, []);
+
+  const projects = [
+    { title: 'Nike Campaign', category: 'Brand Identity', img: 'https://picsum.photos/800/600?random=10' },
+    { title: 'Spotify Motion', category: 'Motion Design', img: 'https://picsum.photos/800/600?random=11' },
+    { title: 'Apple Web Experience', category: 'Web Design', img: 'https://picsum.photos/800/600?random=12' },
+    { title: 'Adidas Launch', category: 'Campaign', img: 'https://picsum.photos/800/600?random=13' },
+  ];
+
+  return (
+    <section ref={sectionRef} className="horizontal-section">
+      <div className="horizontal-container">
+        <div ref={trackRef} className="horizontal-track">
+          <div style={{ flexShrink: 0, padding: '0 4rem', display: 'flex', alignItems: 'center' }}>
+            <h2 className="font-display" style={{ fontSize: '6vw', whiteSpace: 'nowrap' }}>
+              SELECTED WORK —
+            </h2>
+          </div>
+          {projects.map((project, i) => (
+            <div key={i} className="horizontal-card">
+              <img src={project.img} alt={project.title} loading="lazy" />
+              <div className="horizontal-card-content">
+                <p className="text-muted" style={{ fontSize: '0.875rem', marginBottom: '0.5rem' }}>{project.category}</p>
+                <h3 className="font-display" style={{ fontSize: '2.5rem' }}>{project.title}</h3>
+              </div>
+            </div>
+          ))}
+        </div>
       </div>
     </section>
   );
@@ -735,9 +703,9 @@ const Services = ({ audio }) => {
   ];
 
   return (
-    <section id="services" ref={sectionRef} className="services angle-bottom">
+    <section id="services" ref={sectionRef} className="services">
       <div className="container">
-        <h2 className="font-display" style={{ fontSize: 'clamp(2rem, 6vw, 8rem)', marginBottom: 'var(--space-lg)', letterSpacing: '-0.02em' }}>
+        <h2 className="font-display" style={{ fontSize: '6vw', marginBottom: 'var(--space-lg)' }}>
           WHAT WE DO
         </h2>
         <div className="services-grid">
@@ -792,15 +760,15 @@ const Pricing = ({ lenisRef }) => {
   };
 
   const tiers = [
-    { name: 'Starter', price: 'Free', color: 'var(--accent-primary)', icon: <SparkIcon />, benefits: ['Brand audit', 'Strategy call', 'Community access'], cta: 'Get Started' },
-    { name: 'Growth', price: '$2,500/mo', color: 'var(--accent-secondary)', icon: <FlameIcon />, benefits: ['Dedicated designer', 'Weekly sprints', 'Priority support'], cta: 'Get Started' },
-    { name: 'Partner', price: 'Custom', color: 'var(--accent-tertiary)', icon: <CrownIcon />, benefits: ['Full team embed', 'Quarterly planning', 'White-glove delivery'], cta: 'Contact Us' },
+    { name: 'Starter', price: 'Free', color: 'var(--accent-primary)', icon: <SparkIcon />, benefits: ['Brand audit', 'Strategy call', 'Community access'], cta: 'Get Started', glow: 'rgba(148,255,229,0.1)' },
+    { name: 'Growth', price: '$2,500/mo', color: 'var(--accent-secondary)', icon: <FlameIcon />, benefits: ['Dedicated designer', 'Weekly sprints', 'Priority support'], cta: 'Get Started', glow: 'rgba(255,107,53,0.1)' },
+    { name: 'Partner', price: 'Custom', color: 'var(--accent-tertiary)', icon: <CrownIcon />, benefits: ['Full team embed', 'Quarterly planning', 'White-glove delivery'], cta: 'Contact Us', glow: 'rgba(123,79,212,0.1)' },
   ];
 
   return (
-    <section id="pricing" ref={sectionRef} className="pricing angle-top">
+    <section id="pricing" ref={sectionRef} className="pricing">
       <div className="container">
-        <h2 className="font-display" style={{ fontSize: 'clamp(2rem, 6vw, 8rem)', marginBottom: 'var(--space-lg)', letterSpacing: '-0.02em' }}>
+        <h2 className="font-display" style={{ fontSize: '6vw', marginBottom: 'var(--space-lg)' }}>
           MEMBERSHIP
         </h2>
         <div className="pricing-grid">
@@ -808,7 +776,10 @@ const Pricing = ({ lenisRef }) => {
             <div
               key={tier.name}
               className="pricing-card"
-              style={{ border: `2px solid ${tier.color}` }}
+              style={{ 
+                border: `2px solid ${tier.color}`,
+                '--card-glow': tier.glow 
+              }}
             >
               <div className="tier-icon" style={{ color: tier.color }}>{tier.icon}</div>
               <h3 style={{ fontFamily: 'var(--font-body)', fontSize: '1.5rem', marginBottom: '0.5rem' }}>
@@ -860,13 +831,17 @@ const CTA = ({ audio }) => {
       <Sticker type="circle" color="#94FFE5" size={20} top="75%" left="75%" delay={1} />
       <Sticker type="diamond" color="#7B4FD4" size={28} top="20%" left="80%" delay={2} />
       <div className="container">
-        <h2 className="font-display" style={{ fontSize: 'clamp(2rem, 7vw, 9rem)', marginBottom: '1.5rem', letterSpacing: '-0.02em' }}>
+        <h2 className="font-display" style={{ fontSize: '7vw', marginBottom: '1.5rem' }}>
           READY TO BUILD SOMETHING UNFORGETTABLE?
         </h2>
         <p className="text-muted" style={{ fontSize: '1.25rem', maxWidth: '600px', margin: '0 auto 2rem' }}>
           Book a call with our team. No decks. No fluff. Just a real conversation.
         </p>
-        <MagneticButton className="cta-btn" style={{ fontSize: '1.25rem', padding: '1rem 2.5rem' }} onClick={audio.playClick}>
+        <MagneticButton
+          className="magnetic-btn"
+          style={{ fontSize: '1.25rem', padding: '1rem 2.5rem' }}
+          onClick={audio.playClick}
+        >
           Book a Call
         </MagneticButton>
       </div>
@@ -905,6 +880,11 @@ const Footer = () => (
   </footer>
 );
 
+/* ===== GRAIN OVERLAY ===== */
+const GrainOverlay = () => (
+  <div className="grain-overlay" aria-hidden="true" />
+);
+
 /* ===== APP ===== */
 function App() {
   const audio = useAudio();
@@ -914,7 +894,6 @@ function App() {
   return (
     <div className="app">
       <GrainOverlay />
-      <GradientMesh />
       <CustomCursor />
       <CursorTrail active={trailActive} />
       <Navbar audio={audio} lenisRef={lenisRef} />
@@ -923,6 +902,7 @@ function App() {
         onMouseLeave={() => setTrailActive(false)}
       />
       <NoBoringBrands />
+      <HorizontalScroll />
       <Services audio={audio} />
       <Pricing lenisRef={lenisRef} />
       <ValuesMarquee />
