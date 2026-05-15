@@ -574,3 +574,80 @@ footer a:hover {
     font-size: 14vw;
   }
 }
+/* ===== ACCESSIBILITY ===== */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+  
+  .marquee-content {
+    animation: none !important;
+  }
+  
+  .sticker {
+    animation: none !important;
+  }
+  
+  .trail-image {
+    animation: none !important;
+    opacity: 0 !important;
+  }
+  
+  .custom-cursor {
+    display: none !important;
+  }
+  
+  body, a, button {
+    cursor: auto !important;
+  }
+}
+
+/* ===== KEYBOARD FOCUS ===== */
+a:focus-visible,
+button:focus-visible {
+  outline: 2px solid var(--accent-primary);
+  outline-offset: 4px;
+  border-radius: 2px;
+}
+
+/* ===== FONT DISPLAY SWAP ===== */
+@font-face {
+  font-family: 'Bebas Neue';
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'DM Sans';
+  font-display: swap;
+}
+
+/* ===== SMOOTH SCROLL ANCHORS ===== */
+html {
+  scroll-behavior: smooth;
+}
+
+/* ===== IMAGE LOADING ===== */
+.trail-image {
+  loading: lazy;
+}
+
+/* ===== PRINT STYLES ===== */
+@media print {
+  .navbar,
+  .custom-cursor,
+  .cursor-trail,
+  .sticker,
+  .marquee {
+    display: none !important;
+  }
+  
+  body {
+    background: white;
+    color: black;
+  }
+}
