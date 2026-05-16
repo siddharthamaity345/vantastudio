@@ -433,35 +433,6 @@ const TextReveal = ({ children, as: Component = 'div', className, delay = 0 }) =
   );
 };
 
-/* ===== LOADING SCREEN ===== */
-const LoadingScreen = ({ onComplete }) => {
-  const [progress, setProgress] = useState(0);
-  
-  useEffect(() => {
-    const interval = setInterval(() => {
-      setProgress(prev => {
-        if (prev >= 100) {
-          clearInterval(interval);
-          setTimeout(onComplete, 500);
-          return 100;
-        }
-        return prev + Math.random() * 15;
-      });
-    }, 200);
-    return () => clearInterval(interval);
-  }, [onComplete]);
-
-  return (
-    <div className="loading-screen" style={{ opacity: progress >= 100 ? 0 : 1, pointerEvents: progress >= 100 ? 'none' : 'all', transition: 'opacity 0.5s ease' }}>
-      <div className="logo font-display" style={{ fontSize: '2rem' }}>VANTA STUDIO</div>
-      <div className="loading-bar-container">
-        <div className="loading-bar" style={{ width: `${Math.min(progress, 100)}%` }} />
-      </div>
-      <div className="loading-text">Initializing Experience</div>
-    </div>
-  );
-};
-
 /* ===== HERO CANVAS - PARTICLE FIELD ===== */
 const HeroCanvas = () => {
   const canvasRef = useRef(null);
@@ -482,7 +453,7 @@ const HeroCanvas = () => {
     resize();
     window.addEventListener('resize', resize);
 
-    const particleCount = 100;
+    const particleCount = 80;
     particlesRef.current = Array.from({ length: particleCount }, () => ({
       x: Math.random() * canvas.width,
       y: Math.random() * canvas.height,
@@ -579,7 +550,7 @@ const StudioCanvas = () => {
     window.addEventListener('resize', resize);
 
     const shapes = [];
-    const shapeCount = 8;
+    const shapeCount = 6;
     
     for (let i = 0; i < shapeCount; i++) {
       shapes.push({
@@ -640,7 +611,6 @@ const StudioCanvas = () => {
         ctx.lineWidth = 1.5;
         ctx.stroke();
         
-        // Fill with very low opacity
         ctx.fillStyle = shape.color;
         ctx.globalAlpha = shape.opacity * 0.3;
         ctx.fill();
@@ -683,7 +653,7 @@ const FeaturedCanvas = () => {
     window.addEventListener('resize', resize);
 
     const nodes = [];
-    const nodeCount = 12;
+    const nodeCount = 10;
     
     for (let i = 0; i < nodeCount; i++) {
       nodes.push({
@@ -702,7 +672,6 @@ const FeaturedCanvas = () => {
       ctx.fillStyle = 'rgba(10, 31, 28, 0.05)';
       ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-      // Update and draw nodes
       nodes.forEach((node, i) => {
         node.x += node.vx;
         node.y += node.vy;
@@ -718,7 +687,6 @@ const FeaturedCanvas = () => {
         ctx.globalAlpha = 0.6 + pulse * 0.4;
         ctx.fill();
 
-        // Draw connections
         nodes.slice(i + 1).forEach(other => {
           const d = Math.sqrt((node.x - other.x) ** 2 + (node.y - other.y) ** 2);
           if (d < 150) {
@@ -733,7 +701,6 @@ const FeaturedCanvas = () => {
         });
       });
 
-      // Spawn data packets
       if (Math.random() < 0.03) {
         const from = nodes[Math.floor(Math.random() * nodes.length)];
         const to = nodes[Math.floor(Math.random() * nodes.length)];
@@ -747,7 +714,6 @@ const FeaturedCanvas = () => {
         }
       }
 
-      // Update and draw packets
       for (let i = dataPackets.length - 1; i >= 0; i--) {
         const packet = dataPackets[i];
         packet.progress += packet.speed;
@@ -911,7 +877,7 @@ const Hero = ({ onMouseEnter, onMouseLeave }) => {
       id="hero"
       ref={heroRef}
       className="hero"
-            onMouseEnter={onMouseEnter}
+      onMouseEnter={onMouseEnter}
       onMouseLeave={onMouseLeave}
     >
       <HeroCanvas />
@@ -961,7 +927,7 @@ const Manifesto = () => {
   useEffect(() => {
     const words = document.querySelectorAll('.manifesto-word');
     
-    const triggers = words.map((word, i) => {
+    const triggers = Array.from(words).map((word, i) => {
       return ScrollTrigger.create({
         trigger: word,
         start: 'top 80%',
@@ -1504,11 +1470,9 @@ function App() {
   const audio = useAudio();
   const lenisRef = useLenis();
   const [trailActive, setTrailActive] = useState(false);
-  const [loading, setLoading] = useState(true);
 
   return (
     <div className="app">
-      {loading && <LoadingScreen onComplete={() => setLoading(false)} />}
       <GrainOverlay />
       <CustomCursor />
       <CursorTrail active={trailActive} audio={audio} />
